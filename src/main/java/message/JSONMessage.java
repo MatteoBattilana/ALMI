@@ -1,15 +1,12 @@
 package message;
 
-import exceptions.BlockingRequestException;
 import exceptions.InvalidMessageTypeException;
-
-import java.util.concurrent.atomic.AtomicLong;
 
 public interface JSONMessage
 {
     enum MessageType
     {
-        ERROR_RESPONSE("errorResponse"),
+        ERROR("error"),
         METHOD_CALL_REQUEST("methodCallRequest"),
         METHOD_CALL_RESPONSE("methodCallResponse");
 
@@ -39,6 +36,4 @@ public interface JSONMessage
 
     MessageType getType();
     String getJSON();
-    JSONMessage execute()
-      throws BlockingRequestException;
 }

@@ -1,7 +1,6 @@
 package message.response;
 
 import message.JSONMessage;
-import message.request.MethodCallRequest;
 import method.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -11,7 +10,7 @@ import testUtils.Person;
 
 public class MethodCallResponseTest
 {
-    @Test
+    @Test (expected = ClassCastException.class)
     public void requestNoParameter() throws Exception
     {
         Person person = new Person("Matteo", 23);
@@ -29,5 +28,7 @@ public class MethodCallResponseTest
         Person p = methodDescriptor.getReturnValue();
         Assert.assertEquals("Matteo", p.getName());
         Assert.assertEquals(23, p.getAge());
+
+        Arithmetic wrong = methodDescriptor.getReturnValue();
     }
 }

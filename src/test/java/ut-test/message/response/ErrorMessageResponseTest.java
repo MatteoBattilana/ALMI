@@ -1,30 +1,27 @@
-package message.request;
+package message.response;
 
 import exceptions.AlmiException;
-import exceptions.BlockingRequestException;
 import message.JSONMessage;
 import method.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class ErrorMessageRequestTest
+public class ErrorMessageResponseTest
 {
-    @Test (expected = BlockingRequestException.class)
+    @Test
     public void requestNoParameter() throws Exception
     {
         String json = "" +
           "{  " +
           "   \"messageType\":\"error\"," +
           "   \"messageId\":\"uuid\"," +
-          "   \"exception\":\"" + TypeUtils.toString(new AlmiException("Error message!")) + "\"" +
+          "   \"exception\":\"" + TypeUtils.toString(new AlmiException("Error message!")) + "\"," +
           "}";
 
-        ErrorMessageRequest message = ErrorMessageRequest.parse(new JSONObject(json));
+        ErrorMessageResponse message = ErrorMessageResponse.parse(new JSONObject(json));
         Assert.assertEquals(JSONMessage.MessageType.ERROR, message.getType());
         Assert.assertTrue(message.getThrowable() instanceof AlmiException);
         Assert.assertEquals("Error message!", message.getThrowable().getMessage());
-
-        message.interpret();
     }
 }

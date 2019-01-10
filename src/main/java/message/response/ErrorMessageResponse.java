@@ -7,35 +7,32 @@ import method.Constants;
 import method.TypeUtils;
 import org.json.JSONObject;
 
-import java.io.Serializable;
+import java.util.UUID;
 
-public class MethodCallResponse extends MessageResponse implements JSONMessage
+public class ErrorMessageResponse extends MessageResponse implements JSONMessage
 {
-    private final Serializable mReturnValue;
+    private final Throwable mThrowable;
 
-    public MethodCallResponse(String id, Serializable returnValue)
+    public ErrorMessageResponse(String messageId, Throwable throwable)
     {
-        super(id);
-        mReturnValue = returnValue;
+        super(messageId);
+        mThrowable = throwable;
     }
 
-    public <T> T getReturnValue()
-      throws ClassConversionException
+    public ErrorMessageResponse(Throwable throwable)
     {
-        try
-        {
-            return (T) mReturnValue;
-        }
-        catch(Exception e)
-        {
-            throw new ClassConversionException(e);
-        }
+        this(UUID.randomUUID().toString(), throwable);
+    }
+
+    public Throwable getThrowable()
+    {
+        return mThrowable;
     }
 
     @Override
     public MessageType getType()
     {
-        return MessageType.METHOD_CALL_RESPONSE;
+        return MessageType.ERROR;
     }
 
     @Override
@@ -47,7 +44,7 @@ public class MethodCallResponse extends MessageResponse implements JSONMessage
               + "{"
               + String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_ID, getId())
               + String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_TYPE, getType().toString())
-              + String.format(" \"%s\" : \"%s\"", Constants.JSON_RETURN_VALUE, TypeUtils.toString(mReturnValue))
+              + String.format(" \"%s\" : \"%s\"", Constants.JSON_EXCEPTION, TypeUtils.toString(mThrowable.getMessage()))
               + "}";
         }
         catch(ClassConversionException e)
@@ -56,15 +53,17 @@ public class MethodCallResponse extends MessageResponse implements JSONMessage
         }
     }
 
-    public static MethodCallResponse parse(JSONObject json)
+    public static ErrorMessageResponse parse(JSONObject json)
       throws InvalidRequestException
     {
         try
         {
             String messageId = json.getString(Constants.JSON_MESSAGE_ID);
-            String returnValue = json.getString(Constants.JSON_RETURN_VALUE);
-
-            return new MethodCallResponse(messageId, TypeUtils.fromString(returnValue));
+            Throwable ex = TypeUtils.convertInstanceOfObject(
+              TypeUtils.fromString(json.getString(Constants.JSON_EXCEPTION)),
+              Throwable.class
+            );
+            return new ErrorMessageResponse(messageId, ex);
         }
         catch(ClassConversionException e)
         {

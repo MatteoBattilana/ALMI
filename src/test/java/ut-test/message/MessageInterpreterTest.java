@@ -2,11 +2,13 @@ package message;
 
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
+import exceptions.InvalidRequestException;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
 import method.TypeUtils;
 import org.junit.Assert;
 import org.junit.Test;
+import utils.Interpreter;
 
 public class MessageInterpreterTest
 {
@@ -16,14 +18,13 @@ public class MessageInterpreterTest
         String json = "" +
           "{  " +
           "   \"messageId\":\"uuid\"," +
-          "   \"messageType\":\"errorResponse\"," +
-          "   \"exception\":\"" + TypeUtils.toString(new AlmiException("Error message!")) + "\"," +
-          "   \"apiVersion\":1," +
-          "   \"parameters\":[]" +
+          "   \"messageType\":\"error\"," +
+          "   \"exception\":\"" + TypeUtils.toString(new AlmiException("Error message!")) + "\"" +
           "}";
-        JSONMessage parsed = new MessageInterpreter().parse(json);
+
+        Interpreter<JSONMessage> parsed = new MessageInterpreter().parseRequest(json);
         Assert.assertTrue(parsed instanceof ErrorMessageRequest);
-        parsed.execute();
+        parsed.interpret();
     }
 
     @Test
@@ -38,8 +39,23 @@ public class MessageInterpreterTest
           "   \"parameters\":[]" +
           "}";
 
-        JSONMessage parsed = new MessageInterpreter().parse(json);
+        Interpreter<JSONMessage> parsed = new MessageInterpreter().parseRequest(json);
         Assert.assertTrue(parsed instanceof MethodCallRequest);
-        parsed.execute();
+        parsed.interpret();
+    }
+
+    @Test (expected = InvalidRequestException.class)
+    public void invalidJson() throws Exception
+    {
+        String json = "wrong-json" +
+          "{  " +
+          "   \"messageId\":\"uuid\"," +
+          "   \"messageType\":\"methodCallRequest\"," +
+          "   \"methodName\":\"toString\"," +
+          "   \"apiVersion\":1," +
+          "   \"parameters\":[]" +
+          "}";
+
+        new MessageInterpreter().parseRequest(json);
     }
 }

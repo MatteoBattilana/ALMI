@@ -10,7 +10,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
 import message.JSONMessage;
 import message.MessageInterpreter;
-import message.request.ErrorMessageRequest;
+import message.response.ErrorMessageResponse;
+import utils.Interpreter;
 
 import javax.inject.Inject;
 
@@ -34,15 +35,15 @@ public class InboundHandler extends ChannelInboundHandlerAdapter
 
         try
         {
-            JSONMessage request = mMessageInterpreter.parse(in.toString(CharsetUtil.UTF_8));
-            sendResponse(ctx, request.execute());
+            Interpreter<JSONMessage> request = mMessageInterpreter.parseRequest(in.toString(CharsetUtil.UTF_8));
+            sendResponse(ctx, request.interpret());
         }
         catch(BlockingRequestException ignore)
         {
         }
         catch(AlmiException e)
         {
-            sendResponse(ctx, new ErrorMessageRequest(e));
+            sendResponse(ctx, new ErrorMessageResponse(e));
         }
     }
 

@@ -3,19 +3,20 @@ package message.request;
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
-import message.response.MethodCallResponse;
+import message.JSONMessage;
+import message.response.ErrorMessageResponse;
 import method.Constants;
 import method.TypeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import message.JSONMessage;
+import utils.Interpreter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MethodCallRequest extends MessageRequest implements JSONMessage
+public class MethodCallRequest extends MessageRequest implements JSONMessage, Interpreter<JSONMessage>
 {
     private final String             mMethodName;
     private final List<Serializable> mMethodParameter;
@@ -74,10 +75,11 @@ public class MethodCallRequest extends MessageRequest implements JSONMessage
     }
 
     @Override
-    public JSONMessage execute()
+    public JSONMessage interpret()
       throws BlockingRequestException
     {
-        return new ErrorMessageRequest(new AlmiException("ERrror"));
+        //TODO: implements method call and response
+        return new ErrorMessageResponse(new AlmiException("Missing implementation!"));
     }
 
     public static MethodCallRequest parse(JSONObject json)

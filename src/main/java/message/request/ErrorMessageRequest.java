@@ -1,72 +1,33 @@
 package message.request;
 
 import exceptions.BlockingRequestException;
-import exceptions.ClassConversionException;
 import exceptions.InvalidRequestException;
 import message.JSONMessage;
-import method.Constants;
-import method.TypeUtils;
+import message.response.ErrorMessageResponse;
 import org.json.JSONObject;
+import utils.Interpreter;
 
-public class ErrorMessageRequest extends MessageRequest implements JSONMessage
+public class ErrorMessageRequest extends ErrorMessageResponse implements Interpreter<JSONMessage>
 {
-    private final Throwable mThrowable;
+    public ErrorMessageRequest(String messageId, Throwable throwable)
+    {
+        super(messageId, throwable);
+    }
 
     public ErrorMessageRequest(Throwable throwable)
     {
-        mThrowable = throwable;
+        super(throwable);
     }
 
-    public Throwable getThrowable()
+    public static ErrorMessageRequest parse(JSONObject json) throws InvalidRequestException
     {
-        return mThrowable;
+        ErrorMessageResponse messageResponse = ErrorMessageResponse.parse(json);
+        return new ErrorMessageRequest(messageResponse.getId(), messageResponse.getThrowable());
     }
 
     @Override
-    public MessageType getType()
-    {
-        return MessageType.ERROR_RESPONSE;
-    }
-
-    @Override
-    public String getJSON()
-    {
-        try
-        {
-            return ""
-              + "{"
-              + String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_ID, getId())
-              + String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_TYPE, getType().toString())
-              + String.format(" \"%s\" : \"%s\"", Constants.JSON_EXCEPTION, TypeUtils.toString(mThrowable.getMessage()))
-              + "}";
-        }
-        catch(ClassConversionException e)
-        {
-            return "{}";
-        }
-    }
-
-    @Override
-    public JSONMessage execute()
-      throws BlockingRequestException
+    public JSONMessage interpret() throws BlockingRequestException
     {
         throw new BlockingRequestException(getType());
-    }
-
-    public static ErrorMessageRequest parse(JSONObject json)
-      throws InvalidRequestException
-    {
-        try
-        {
-            Throwable ex = TypeUtils.convertInstanceOfObject(
-              TypeUtils.fromString(json.getString(Constants.JSON_EXCEPTION)),
-              Throwable.class
-            );
-            return new ErrorMessageRequest(ex);
-        }
-        catch(ClassConversionException e)
-        {
-            throw new InvalidRequestException(json.toString(), e);
-        }
     }
 }

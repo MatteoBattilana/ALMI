@@ -7,10 +7,11 @@ import method.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
 import message.request.MethodCallRequest;
+import utils.Interpreter;
 
 public class MessageInterpreter
 {
-    public JSONMessage parse(String json)
+    public Interpreter<JSONMessage> parseRequest(String json)
       throws AlmiException
     {
         try
@@ -20,12 +21,12 @@ public class MessageInterpreter
 
             switch(type)
             {
-                case ERROR_RESPONSE:
+                case ERROR:
                     return ErrorMessageRequest.parse(jsonObject);
                 case METHOD_CALL_REQUEST:
                     return MethodCallRequest.parse(jsonObject);
                 default:
-                    throw new UnsupportedOperationException();
+                    throw new InvalidRequestException(json);
             }
         }
         catch(JSONException e)

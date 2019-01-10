@@ -1,8 +1,8 @@
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import guice.AlmiModules;
-import websocket.ServerSocket;
-import websocket.ServerSocketFactory;
+import websocket.ServerSocketService;
+import websocket.ServerSocketServiceFactory;
 
 public class Main
 {
@@ -10,12 +10,9 @@ public class Main
     {
         Injector injector = Guice.createInjector(new AlmiModules());
 
-        ServerSocketFactory serverSocketFactory = injector.getInstance(ServerSocketFactory.class);
-        ServerSocket serverSocket = serverSocketFactory.create(11111);
-        try {
-            serverSocket.start();
-        } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
-        }
+        ServerSocketServiceFactory serverSocketFactory = injector.getInstance(ServerSocketServiceFactory.class);
+        ServerSocketService serverSocket = serverSocketFactory.create(11111);
+        serverSocket.start();
+        Thread.yield();
     }
 }
