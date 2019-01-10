@@ -20,9 +20,9 @@ jobs:
       # Customize the JVM maximum heap limit
       MAVEN_OPTS: -Xmx3200m
 
-	test:
-		override:
-			- "true"
+    test:
+      override:
+          - "true"
     
     steps:
       - checkout
