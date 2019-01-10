@@ -8,9 +8,9 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
-import websocket.message.ErrorMessage;
-import websocket.message.JSONMessage;
-import websocket.message.MessageInterpreter;
+import message.ErrorMessage;
+import message.JSONMessage;
+import message.MessageInterpreter;
 
 import javax.inject.Inject;
 

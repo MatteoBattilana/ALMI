@@ -1,6 +1,6 @@
 package exceptions;
 
-import websocket.message.JSONMessage;
+import message.JSONMessage;
 
 public class BlockingRequestException extends AlmiException
 {

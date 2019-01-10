@@ -1,11 +1,11 @@
-package websocket.message;
+package message;
 
 import exceptions.AlmiException;
 import exceptions.InvalidRequestException;
 import method.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
-import websocket.message.request.MethodCallRequest;
+import message.request.MethodCallRequest;
 
 public class MessageInterpreter
 {

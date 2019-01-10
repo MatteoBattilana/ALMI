@@ -1,11 +1,11 @@
-package websocket.message;
+package message;
 
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
+import message.request.MethodCallRequest;
 import method.TypeUtils;
 import org.junit.Assert;
 import org.junit.Test;
-import websocket.message.request.MethodCallRequest;
 
 public class MessageInterpreterTest
 {

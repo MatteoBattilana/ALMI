@@ -1,15 +1,14 @@
-package websocket.message.request;
+package message.request;
 
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
-import exceptions.InvalidRequestException;
 import method.Constants;
 import method.TypeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import websocket.message.ErrorMessage;
-import websocket.message.JSONMessage;
+import message.ErrorMessage;
+import message.JSONMessage;
 
 import java.io.Serializable;
 import java.util.ArrayList;

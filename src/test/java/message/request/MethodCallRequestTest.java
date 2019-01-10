@@ -1,11 +1,11 @@
-package websocket.message.request;
+package message.request;
 
+import message.JSONMessage;
 import method.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import testUtils.Arithmetic;
-import websocket.message.JSONMessage;
 
 public class MethodCallRequestTest
 {

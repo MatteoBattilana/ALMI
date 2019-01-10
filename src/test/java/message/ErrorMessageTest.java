@@ -1,4 +1,4 @@
-package websocket.message;
+package message;
 
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
