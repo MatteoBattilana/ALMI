@@ -3,11 +3,11 @@ package message.request;
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
+import message.response.MethodCallResponse;
 import method.Constants;
 import method.TypeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import message.ErrorMessage;
 import message.JSONMessage;
 
 import java.io.Serializable;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MethodCallRequest implements JSONMessage
+public class MethodCallRequest extends MessageRequest implements JSONMessage
 {
     private final String             mMethodName;
     private final List<Serializable> mMethodParameter;
@@ -39,7 +39,7 @@ public class MethodCallRequest implements JSONMessage
     @Override
     public MessageType getType()
     {
-        return MessageType.METHOD_CALL;
+        return MessageType.METHOD_CALL_REQUEST;
     }
 
     @Override
@@ -48,6 +48,7 @@ public class MethodCallRequest implements JSONMessage
         try
         {
             StringBuilder json = new StringBuilder("{")
+              .append(String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_ID, getId()))
               .append(String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_TYPE, getType().toString()))
               .append(String.format(" \"%s\" : \"%s\"", Constants.JSON_METHOD_NAME, mMethodName))
               .append(String.format(" \"%s\" : [", Constants.JSON_PARAMETERS));
@@ -76,7 +77,7 @@ public class MethodCallRequest implements JSONMessage
     public JSONMessage execute()
       throws BlockingRequestException
     {
-        return new ErrorMessage(new AlmiException("ERrror"));
+        return new ErrorMessageRequest(new AlmiException("ERrror"));
     }
 
     public static MethodCallRequest parse(JSONObject json)

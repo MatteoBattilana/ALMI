@@ -3,12 +3,15 @@ package message;
 import exceptions.BlockingRequestException;
 import exceptions.InvalidMessageTypeException;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public interface JSONMessage
 {
     enum MessageType
     {
-        ERROR("error"),
-        METHOD_CALL("methodCall");
+        ERROR_RESPONSE("errorResponse"),
+        METHOD_CALL_REQUEST("methodCallRequest"),
+        METHOD_CALL_RESPONSE("methodCallResponse");
 
         private final String mName;
 

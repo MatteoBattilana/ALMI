@@ -10,18 +10,19 @@ import testUtils.Arithmetic;
 public class MethodCallRequestTest
 {
     @Test
-    public void requestNoParameter() throws Exception
+    public void requestNoParameter()
     {
         String json = "" +
           "{  " +
-          "   \"messageType\":\"methodCall\"," +
+          "   \"messageId\":\"uuid\"," +
+          "   \"messageType\":\"methodCallRequest\"," +
           "   \"methodName\":\"toString\"," +
           "   \"apiVersion\":1," +
           "   \"parameters\":[]" +
           "}";
 
         MethodCallRequest methodDescriptor = MethodCallRequest.parse(new JSONObject(json));
-        Assert.assertEquals(JSONMessage.MessageType.METHOD_CALL, methodDescriptor.getType());
+        Assert.assertEquals(JSONMessage.MessageType.METHOD_CALL_REQUEST, methodDescriptor.getType());
         Assert.assertTrue(methodDescriptor.getMethodParameter().isEmpty());
     }
 
@@ -30,6 +31,7 @@ public class MethodCallRequestTest
     {
         String json = "" +
           "{  " +
+          "   \"messageId\":\"uuid\"," +
           "   \"messageType\":\"methodCall\"," +
           "   \"methodName\":\"sum\"," +
           "   \"apiVersion\":1," +

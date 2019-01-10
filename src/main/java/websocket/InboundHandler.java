@@ -8,9 +8,9 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
-import message.ErrorMessage;
 import message.JSONMessage;
 import message.MessageInterpreter;
+import message.request.ErrorMessageRequest;
 
 import javax.inject.Inject;
 
@@ -42,7 +42,7 @@ public class InboundHandler extends ChannelInboundHandlerAdapter
         }
         catch(AlmiException e)
         {
-            sendResponse(ctx, new ErrorMessage(e));
+            sendResponse(ctx, new ErrorMessageRequest(e));
         }
     }
 

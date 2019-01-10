@@ -1,17 +1,18 @@
-package message;
+package message.request;
 
 import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
 import exceptions.InvalidRequestException;
+import message.JSONMessage;
 import method.Constants;
 import method.TypeUtils;
 import org.json.JSONObject;
 
-public class ErrorMessage implements JSONMessage
+public class ErrorMessageRequest extends MessageRequest implements JSONMessage
 {
     private final Throwable mThrowable;
 
-    public ErrorMessage(Throwable throwable)
+    public ErrorMessageRequest(Throwable throwable)
     {
         mThrowable = throwable;
     }
@@ -24,7 +25,7 @@ public class ErrorMessage implements JSONMessage
     @Override
     public MessageType getType()
     {
-        return MessageType.ERROR;
+        return MessageType.ERROR_RESPONSE;
     }
 
     @Override
@@ -34,6 +35,7 @@ public class ErrorMessage implements JSONMessage
         {
             return ""
               + "{"
+              + String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_ID, getId())
               + String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_TYPE, getType().toString())
               + String.format(" \"%s\" : \"%s\"", Constants.JSON_EXCEPTION, TypeUtils.toString(mThrowable.getMessage()))
               + "}";
@@ -51,7 +53,7 @@ public class ErrorMessage implements JSONMessage
         throw new BlockingRequestException(getType());
     }
 
-    public static ErrorMessage parse(JSONObject json)
+    public static ErrorMessageRequest parse(JSONObject json)
       throws InvalidRequestException
     {
         try
@@ -60,7 +62,7 @@ public class ErrorMessage implements JSONMessage
               TypeUtils.fromString(json.getString(Constants.JSON_EXCEPTION)),
               Throwable.class
             );
-            return new ErrorMessage(ex);
+            return new ErrorMessageRequest(ex);
         }
         catch(ClassConversionException e)
         {

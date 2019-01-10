@@ -9,6 +9,6 @@ public class InvalidMessageTypeException extends AlmiException
 
     private static String getErrorMessage(String name)
     {
-        return String.format("Message type not valid: %s", name);
+        return String.format("MessageResponse type not valid: %s", name);
     }
 }

@@ -2,6 +2,7 @@ package message;
 
 import exceptions.AlmiException;
 import exceptions.InvalidRequestException;
+import message.request.ErrorMessageRequest;
 import method.Constants;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,9 +20,9 @@ public class MessageInterpreter
 
             switch(type)
             {
-                case ERROR:
-                    return ErrorMessage.parse(jsonObject);
-                case METHOD_CALL:
+                case ERROR_RESPONSE:
+                    return ErrorMessageRequest.parse(jsonObject);
+                case METHOD_CALL_REQUEST:
                     return MethodCallRequest.parse(jsonObject);
                 default:
                     throw new UnsupportedOperationException();
