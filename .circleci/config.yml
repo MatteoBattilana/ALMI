@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/ALMI
+    docker:
+      - image: maven:3.5.0-jdk-8
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: ALMI-{{ checksum "pom.xml" }}
+
+      - run: mvn test
+
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: ALMI-{{ checksum "pom.xml" }}
+
+      - store_test_results:
+          path: target/surefire-reports
