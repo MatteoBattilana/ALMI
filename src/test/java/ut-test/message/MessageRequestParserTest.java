@@ -3,16 +3,14 @@ package message;
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
 import exceptions.InvalidRequestException;
-import jdk.internal.org.objectweb.asm.tree.analysis.Interpreter;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
 import method.TypeUtils;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class MessageResponseInterpreterImplTest
+public class MessageRequestParserTest
 {
     private MessageRequestParser mMessageRequestParser;
 
