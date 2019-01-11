@@ -2,7 +2,7 @@ package message.request;
 
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
-import message.JSONMessage;
+import message.MessageType;
 import method.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -21,10 +21,10 @@ public class ErrorMessageRequestTest
           "}";
 
         ErrorMessageRequest message = ErrorMessageRequest.parse(new JSONObject(json));
-        Assert.assertEquals(JSONMessage.MessageType.ERROR, message.getType());
+        Assert.assertEquals(MessageType.ERROR, message.getType());
         Assert.assertTrue(message.getThrowable() instanceof AlmiException);
         Assert.assertEquals("Error message!", message.getThrowable().getMessage());
 
-        message.interpret();
+        message.generateResponse();
     }
 }

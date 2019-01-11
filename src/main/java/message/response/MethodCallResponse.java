@@ -1,21 +1,23 @@
 package message.response;
 
+import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
 import exceptions.InvalidRequestException;
-import message.JSONMessage;
-import method.Constants;
+import message.BaseMessage;
+import message.MessageType;
+import utils.Constants;
 import method.TypeUtils;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 
-public class MethodCallResponse extends MessageResponse implements JSONMessage
+public class MethodCallResponse extends BaseMessage
 {
     private final Serializable mReturnValue;
 
     public MethodCallResponse(String id, Serializable returnValue)
     {
-        super(id);
+        super(MessageType.METHOD_CALL_RESPONSE, id);
         mReturnValue = returnValue;
     }
 
@@ -30,12 +32,6 @@ public class MethodCallResponse extends MessageResponse implements JSONMessage
         {
             throw new ClassConversionException(e);
         }
-    }
-
-    @Override
-    public MessageType getType()
-    {
-        return MessageType.METHOD_CALL_RESPONSE;
     }
 
     @Override
@@ -54,6 +50,13 @@ public class MethodCallResponse extends MessageResponse implements JSONMessage
         {
             return "{}";
         }
+    }
+
+    @Override
+    public BaseMessage generateResponse()
+      throws BlockingRequestException
+    {
+        throw new BlockingRequestException(getType());
     }
 
     public static MethodCallResponse parse(JSONObject json)

@@ -1,28 +1,27 @@
 package message.request;
 
-import exceptions.AlmiException;
-import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
-import message.JSONMessage;
-import message.response.ErrorMessageResponse;
-import method.Constants;
+import message.BaseMessage;
+import message.MessageType;
+import message.response.MethodCallResponse;
+import utils.Constants;
 import method.TypeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import utils.Interpreter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class MethodCallRequest extends MessageRequest implements JSONMessage, Interpreter<JSONMessage>
+public class MethodCallRequest extends BaseMessage
 {
     private final String             mMethodName;
     private final List<Serializable> mMethodParameter;
 
     public MethodCallRequest(String methodName, List<Serializable> params)
     {
+        super(MessageType.METHOD_CALL_REQUEST, BaseMessage.randomId());
         this.mMethodName = methodName;
         this.mMethodParameter = params;
     }
@@ -35,12 +34,6 @@ public class MethodCallRequest extends MessageRequest implements JSONMessage, In
     public List<Serializable> getMethodParameter()
     {
         return mMethodParameter;
-    }
-
-    @Override
-    public MessageType getType()
-    {
-        return MessageType.METHOD_CALL_REQUEST;
     }
 
     @Override
@@ -75,11 +68,10 @@ public class MethodCallRequest extends MessageRequest implements JSONMessage, In
     }
 
     @Override
-    public JSONMessage interpret()
-      throws BlockingRequestException
+    public BaseMessage generateResponse()
     {
-        //TODO: implements method call and response
-        return new ErrorMessageResponse(new AlmiException("Missing implementation!"));
+        // calculate return value
+        return new MethodCallResponse(getId(), 10);
     }
 
     public static MethodCallRequest parse(JSONObject json)

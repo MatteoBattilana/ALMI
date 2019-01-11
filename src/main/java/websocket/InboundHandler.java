@@ -8,24 +8,23 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.CharsetUtil;
-import message.JSONMessage;
-import message.MessageInterpreter;
+import message.BaseMessage;
+import message.MessageRequestParser;
 import message.response.ErrorMessageResponse;
-import utils.Interpreter;
 
 import javax.inject.Inject;
 
 @ChannelHandler.Sharable
 public class InboundHandler extends ChannelInboundHandlerAdapter
 {
-    private final MessageInterpreter mMessageInterpreter;
+    private final MessageRequestParser mMessageParser;
 
     @Inject
     public InboundHandler(
-      MessageInterpreter messageInterpreter
+      MessageRequestParser messageRequestParser
     )
     {
-        mMessageInterpreter = messageInterpreter;
+        mMessageParser = messageRequestParser;
     }
 
     @Override
@@ -35,8 +34,8 @@ public class InboundHandler extends ChannelInboundHandlerAdapter
 
         try
         {
-            Interpreter<JSONMessage> request = mMessageInterpreter.parseRequest(in.toString(CharsetUtil.UTF_8));
-            sendResponse(ctx, request.interpret());
+            BaseMessage request = mMessageParser.parseRequest(in.toString(CharsetUtil.UTF_8));
+            sendResponse(ctx, request.generateResponse());
         }
         catch(BlockingRequestException ignore)
         {
@@ -49,7 +48,6 @@ public class InboundHandler extends ChannelInboundHandlerAdapter
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx)
-      throws Exception
     {
         ctx.writeAndFlush(Unpooled.EMPTY_BUFFER);
     }
@@ -61,7 +59,7 @@ public class InboundHandler extends ChannelInboundHandlerAdapter
         ctx.close();
     }
 
-    private void sendResponse(ChannelHandlerContext ctx, JSONMessage response)
+    private void sendResponse(ChannelHandlerContext ctx, BaseMessage response)
     {
         ByteBuf byteBufResponse = Unpooled.copiedBuffer(response.getJSON(), CharsetUtil.UTF_8);
         ctx.writeAndFlush(byteBufResponse);

@@ -3,15 +3,25 @@ package message;
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
 import exceptions.InvalidRequestException;
+import jdk.internal.org.objectweb.asm.tree.analysis.Interpreter;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
 import method.TypeUtils;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import utils.Interpreter;
 
-public class MessageInterpreterTest
+public class MessageResponseInterpreterImplTest
 {
+    private MessageRequestParser mMessageRequestParser;
+
+    @Before
+    public void setup()
+    {
+        mMessageRequestParser = new MessageRequestParser();
+    }
+
     @Test (expected = BlockingRequestException.class)
     public void errorMessage() throws Exception
     {
@@ -22,9 +32,9 @@ public class MessageInterpreterTest
           "   \"exception\":\"" + TypeUtils.toString(new AlmiException("Error message!")) + "\"" +
           "}";
 
-        Interpreter<JSONMessage> parsed = new MessageInterpreter().parseRequest(json);
+        BaseMessage parsed = mMessageRequestParser.parseRequest(json);
         Assert.assertTrue(parsed instanceof ErrorMessageRequest);
-        parsed.interpret();
+        parsed.generateResponse();
     }
 
     @Test
@@ -39,9 +49,9 @@ public class MessageInterpreterTest
           "   \"parameters\":[]" +
           "}";
 
-        Interpreter<JSONMessage> parsed = new MessageInterpreter().parseRequest(json);
+        BaseMessage parsed = mMessageRequestParser.parseRequest(json);
         Assert.assertTrue(parsed instanceof MethodCallRequest);
-        parsed.interpret();
+        parsed.generateResponse();
     }
 
     @Test (expected = InvalidRequestException.class)
@@ -56,6 +66,6 @@ public class MessageInterpreterTest
           "   \"parameters\":[]" +
           "}";
 
-        new MessageInterpreter().parseRequest(json);
+        mMessageRequestParser.parseRequest(json);
     }
 }

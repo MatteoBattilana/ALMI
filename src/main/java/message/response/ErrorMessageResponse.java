@@ -1,21 +1,23 @@
 package message.response;
 
+import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
 import exceptions.InvalidRequestException;
-import message.JSONMessage;
-import method.Constants;
+import message.BaseMessage;
+import message.MessageType;
+import utils.Constants;
 import method.TypeUtils;
 import org.json.JSONObject;
 
 import java.util.UUID;
 
-public class ErrorMessageResponse extends MessageResponse implements JSONMessage
+public class ErrorMessageResponse extends BaseMessage
 {
     private final Throwable mThrowable;
 
     public ErrorMessageResponse(String messageId, Throwable throwable)
     {
-        super(messageId);
+        super(MessageType.ERROR, messageId);
         mThrowable = throwable;
     }
 
@@ -27,12 +29,6 @@ public class ErrorMessageResponse extends MessageResponse implements JSONMessage
     public Throwable getThrowable()
     {
         return mThrowable;
-    }
-
-    @Override
-    public MessageType getType()
-    {
-        return MessageType.ERROR;
     }
 
     @Override
@@ -51,6 +47,13 @@ public class ErrorMessageResponse extends MessageResponse implements JSONMessage
         {
             return "{}";
         }
+    }
+
+    @Override
+    public BaseMessage generateResponse()
+      throws BlockingRequestException
+    {
+        throw new BlockingRequestException(getType());
     }
 
     public static ErrorMessageResponse parse(JSONObject json)

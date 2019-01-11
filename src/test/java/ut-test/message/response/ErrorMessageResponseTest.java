@@ -1,7 +1,7 @@
 package message.response;
 
 import exceptions.AlmiException;
-import message.JSONMessage;
+import message.MessageType;
 import method.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -20,7 +20,7 @@ public class ErrorMessageResponseTest
           "}";
 
         ErrorMessageResponse message = ErrorMessageResponse.parse(new JSONObject(json));
-        Assert.assertEquals(JSONMessage.MessageType.ERROR, message.getType());
+        Assert.assertEquals(MessageType.ERROR, message.getType());
         Assert.assertTrue(message.getThrowable() instanceof AlmiException);
         Assert.assertEquals("Error message!", message.getThrowable().getMessage());
     }

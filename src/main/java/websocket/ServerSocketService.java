@@ -2,7 +2,7 @@ package websocket;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import method.Constants;
+import utils.Constants;
 
 public class ServerSocketService implements Service, Runnable
 {

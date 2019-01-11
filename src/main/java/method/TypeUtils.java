@@ -19,12 +19,6 @@ public class TypeUtils
         }
     }
 
-    public static Serializable fromString(String str, Class<? extends Serializable> cls)
-      throws ClassConversionException
-    {
-        return convertInstanceOfObject(fromString(str), cls);
-    }
-
     public static Serializable fromString(String str)
       throws ClassConversionException
     {

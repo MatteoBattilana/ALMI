@@ -1,6 +1,6 @@
 package message.response;
 
-import message.JSONMessage;
+import message.MessageType;
 import method.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -22,7 +22,7 @@ public class MethodCallResponseTest
           "}";
 
         MethodCallResponse methodDescriptor = MethodCallResponse.parse(new JSONObject(json));
-        Assert.assertEquals(JSONMessage.MessageType.METHOD_CALL_RESPONSE, methodDescriptor.getType());
+        Assert.assertEquals(MessageType.METHOD_CALL_RESPONSE, methodDescriptor.getType());
         Assert.assertTrue(methodDescriptor.getReturnValue() instanceof Person);
 
         Person p = methodDescriptor.getReturnValue();

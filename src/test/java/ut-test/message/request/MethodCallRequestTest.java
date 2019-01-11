@@ -1,6 +1,6 @@
 package message.request;
 
-import message.JSONMessage;
+import message.MessageType;
 import method.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -22,7 +22,7 @@ public class MethodCallRequestTest
           "}";
 
         MethodCallRequest methodDescriptor = MethodCallRequest.parse(new JSONObject(json));
-        Assert.assertEquals(JSONMessage.MessageType.METHOD_CALL_REQUEST, methodDescriptor.getType());
+        Assert.assertEquals(MessageType.METHOD_CALL_REQUEST, methodDescriptor.getType());
         Assert.assertTrue(methodDescriptor.getMethodParameter().isEmpty());
     }
 
