@@ -5,7 +5,7 @@ import exceptions.BlockingRequestException;
 import exceptions.InvalidRequestException;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
-import method.TypeUtils;
+import utils.TypeUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

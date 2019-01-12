@@ -32,14 +32,7 @@ public class ServerSocketService implements Service, Runnable
     @Override
     public void stop()
     {
-        try
-        {
-            mServerSocket.close();
-        }
-        catch(InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+        mServerSocket.close();
     }
 
     @Override

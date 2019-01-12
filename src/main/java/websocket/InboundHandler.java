@@ -2,6 +2,7 @@ package websocket;
 
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
+import exceptions.JsonGenerationException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
@@ -61,7 +62,14 @@ public class InboundHandler extends ChannelInboundHandlerAdapter
 
     private void sendResponse(ChannelHandlerContext ctx, BaseMessage response)
     {
-        ByteBuf byteBufResponse = Unpooled.copiedBuffer(response.getJSON(), CharsetUtil.UTF_8);
-        ctx.writeAndFlush(byteBufResponse);
+        try
+        {
+            ByteBuf byteBufResponse = Unpooled.copiedBuffer(response.toContainer().toJSON(), CharsetUtil.UTF_8);
+            ctx.writeAndFlush(byteBufResponse);
+        }
+        catch(JsonGenerationException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

@@ -3,10 +3,12 @@ package message.response;
 import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
 import exceptions.InvalidRequestException;
+import exceptions.JsonGenerationException;
 import message.BaseMessage;
 import message.MessageType;
 import utils.Constants;
-import method.TypeUtils;
+import utils.Container;
+import utils.TypeUtils;
 import org.json.JSONObject;
 
 import java.util.UUID;
@@ -32,20 +34,18 @@ public class ErrorMessageResponse extends BaseMessage
     }
 
     @Override
-    public String getJSON()
+    public Container toContainer()
+      throws JsonGenerationException
     {
         try
         {
-            return ""
-              + "{"
-              + String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_ID, getId())
-              + String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_TYPE, getType().toString())
-              + String.format(" \"%s\" : \"%s\"", Constants.JSON_EXCEPTION, TypeUtils.toString(mThrowable.getMessage()))
-              + "}";
+            Container json = super.toContainer();
+            json.put(Constants.JSON_EXCEPTION, TypeUtils.toString(mThrowable.getMessage()));
+            return json;
         }
         catch(ClassConversionException e)
         {
-            return "{}";
+            throw new JsonGenerationException(e);
         }
     }
 

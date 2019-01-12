@@ -1,8 +1,12 @@
-package method;
+package utils;
 
 import exceptions.ClassConversionException;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Base64;
 
 public class TypeUtils

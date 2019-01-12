@@ -3,6 +3,7 @@ package method;
 import org.junit.Assert;
 import org.junit.Test;
 import testUtils.Person;
+import utils.TypeUtils;
 
 public class TypeUtilsTest {
 

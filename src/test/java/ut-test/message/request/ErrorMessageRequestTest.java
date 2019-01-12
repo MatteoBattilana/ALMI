@@ -3,7 +3,7 @@ package message.request;
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
 import message.MessageType;
-import method.TypeUtils;
+import utils.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;

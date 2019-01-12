@@ -2,7 +2,7 @@ package message.response;
 
 import exceptions.AlmiException;
 import message.MessageType;
-import method.TypeUtils;
+import utils.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;

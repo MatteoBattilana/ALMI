@@ -1,29 +1,31 @@
 package message.request;
 
 import exceptions.ClassConversionException;
+import exceptions.InvalidRequestException;
+import exceptions.JsonGenerationException;
 import message.BaseMessage;
 import message.MessageType;
 import message.response.MethodCallResponse;
 import utils.Constants;
-import method.TypeUtils;
+import utils.Container;
+import utils.TypeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class MethodCallRequest extends BaseMessage
 {
-    private final String             mMethodName;
-    private final List<Serializable> mMethodParameter;
+    private final String       mMethodName;
+    private final List<String> mMethodParameters;
 
-    public MethodCallRequest(String methodName, List<Serializable> params)
+    public MethodCallRequest(String methodName, List<String> params)
     {
         super(MessageType.METHOD_CALL_REQUEST, BaseMessage.randomId());
         this.mMethodName = methodName;
-        this.mMethodParameter = params;
+        this.mMethodParameters = params;
     }
 
     public String getMethodName()
@@ -31,40 +33,33 @@ public class MethodCallRequest extends BaseMessage
         return mMethodName;
     }
 
-    public List<Serializable> getMethodParameter()
-    {
-        return mMethodParameter;
-    }
-
-    @Override
-    public String getJSON()
+    public List<Serializable> getMethodParameters()
+      throws InvalidRequestException
     {
         try
         {
-            StringBuilder json = new StringBuilder("{")
-              .append(String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_ID, getId()))
-              .append(String.format(" \"%s\" : \"%s\",", Constants.JSON_MESSAGE_TYPE, getType().toString()))
-              .append(String.format(" \"%s\" : \"%s\"", Constants.JSON_METHOD_NAME, mMethodName))
-              .append(String.format(" \"%s\" : [", Constants.JSON_PARAMETERS));
-
-            Iterator<Serializable> paramIterator = mMethodParameter.iterator();
-            while(paramIterator.hasNext())
+            List<Serializable> params = new ArrayList<>();
+            for(String p : mMethodParameters)
             {
-                Serializable param = paramIterator.next();
-                json.append(TypeUtils.toString(param));
-                if(paramIterator.hasNext())
-                {
-                    json.append(", ");
-                }
+                params.add(TypeUtils.fromString(p));
             }
-
-            return json.append("   ]")
-              .append("}").toString();
+            return params;
         }
         catch(ClassConversionException e)
         {
-            return "{}";
+            throw new InvalidRequestException(e);
         }
+    }
+
+    @Override
+    public Container toContainer()
+      throws JsonGenerationException
+    {
+        Container json = super.toContainer();
+        json.put(Constants.JSON_METHOD_NAME, mMethodName);
+        json.put(Constants.JSON_PARAMETERS, mMethodParameters);
+
+        return json;
     }
 
     @Override
@@ -77,13 +72,13 @@ public class MethodCallRequest extends BaseMessage
     public static MethodCallRequest parse(JSONObject json)
     {
         String methodName = json.getString(Constants.JSON_METHOD_NAME);
-        List<Serializable> params = new ArrayList<>();
+        List<String> params = new ArrayList<>();
         JSONArray jsonParams = json.getJSONArray(Constants.JSON_PARAMETERS);
         for(int i = 0; i < jsonParams.length(); i++)
         {
             try
             {
-                params.add(TypeUtils.fromString(jsonParams.getString(i)));
+                params.add(jsonParams.getString(i));
             }
             catch(Exception ignore)
             {

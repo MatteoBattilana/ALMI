@@ -1,7 +1,7 @@
 package message.response;
 
 import message.MessageType;
-import method.TypeUtils;
+import utils.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;

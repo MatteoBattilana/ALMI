@@ -9,9 +9,10 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 
+import java.io.Closeable;
 import java.net.InetSocketAddress;
 
-public class ServerSocket
+public class ServerSocket implements Closeable
 {
     private final int            mPort;
     private final InboundHandler mInboundHandler;
@@ -28,10 +29,10 @@ public class ServerSocket
         mPort = port;
     }
 
+    @Override
     public void close()
-      throws InterruptedException
     {
-        mGroup.shutdownGracefully().sync();
+        // mGroup.shutdownGracefully().sync();
     }
 
     public void startListening()

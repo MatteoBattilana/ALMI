@@ -1,7 +1,7 @@
 package message.request;
 
 import message.MessageType;
-import method.TypeUtils;
+import utils.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +10,7 @@ import testUtils.Arithmetic;
 public class MethodCallRequestTest
 {
     @Test
-    public void requestNoParameter()
+    public void requestNoParameter() throws Exception
     {
         String json = "" +
           "{  " +
@@ -23,7 +23,7 @@ public class MethodCallRequestTest
 
         MethodCallRequest methodDescriptor = MethodCallRequest.parse(new JSONObject(json));
         Assert.assertEquals(MessageType.METHOD_CALL_REQUEST, methodDescriptor.getType());
-        Assert.assertTrue(methodDescriptor.getMethodParameter().isEmpty());
+        Assert.assertTrue(methodDescriptor.getMethodParameters().isEmpty());
     }
 
     @Test
@@ -40,8 +40,8 @@ public class MethodCallRequestTest
 
         MethodCallRequest methodDescriptor = MethodCallRequest.parse(new JSONObject(json));
         Assert.assertEquals("sum", methodDescriptor.getMethodName());
-        Assert.assertEquals(2, methodDescriptor.getMethodParameter().size());
-        Assert.assertTrue(methodDescriptor.getMethodParameter().get(0) instanceof Arithmetic);
-        Assert.assertTrue(methodDescriptor.getMethodParameter().get(1) instanceof Integer);
+        Assert.assertEquals(2, methodDescriptor.getMethodParameters().size());
+        Assert.assertTrue(methodDescriptor.getMethodParameters().get(0) instanceof Arithmetic);
+        Assert.assertTrue(methodDescriptor.getMethodParameters().get(1) instanceof Integer);
     }
 }

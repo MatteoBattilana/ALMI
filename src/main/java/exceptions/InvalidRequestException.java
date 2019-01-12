@@ -7,6 +7,11 @@ public class InvalidRequestException extends AlmiException
         super(getErrorMessage(json));
     }
 
+    public InvalidRequestException(Throwable throwable)
+    {
+        super(throwable);
+    }
+
     public InvalidRequestException(String json, Throwable throwable)
     {
         super(getErrorMessage(json), throwable);
