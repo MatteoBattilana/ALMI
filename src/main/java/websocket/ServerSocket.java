@@ -32,7 +32,13 @@ public class ServerSocket implements Closeable
     @Override
     public void close()
     {
-        // mGroup.shutdownGracefully().sync();
+        try
+        {
+            mGroup.shutdownGracefully().sync();
+        }
+        catch(InterruptedException ignored)
+        {
+        }
     }
 
     public void startListening()

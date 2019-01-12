@@ -38,7 +38,7 @@ public abstract class BaseMessage
       throws JsonGenerationException
     {
         SimpleContainer info = new SimpleContainer();
-        info.put(Constants.JSON_MESSAGE_TYPE, getType());
+        info.put(Constants.JSON_MESSAGE_TYPE, getType().toString());
         info.put(Constants.JSON_MESSAGE_ID, getId());
 
         return info;

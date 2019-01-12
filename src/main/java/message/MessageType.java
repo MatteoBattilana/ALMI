@@ -1,6 +1,5 @@
 package message;
 
-import exceptions.InvalidMessageTypeException;
 import utils.Constants;
 
 public enum MessageType
