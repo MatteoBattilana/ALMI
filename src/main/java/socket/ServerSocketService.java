@@ -1,4 +1,4 @@
-package websocket;
+package socket;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;

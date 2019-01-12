@@ -1,8 +1,8 @@
 package exceptions;
 
-public class JsonGenerationException extends AlmiException
+public class JSONGenerationException extends AlmiException
 {
-    public JsonGenerationException(Throwable throwable)
+    public JSONGenerationException(Throwable throwable)
     {
         super(getErrorMessage(), throwable);
     }

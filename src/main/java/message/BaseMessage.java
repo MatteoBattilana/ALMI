@@ -1,10 +1,9 @@
 package message;
 
 import exceptions.BlockingRequestException;
-import exceptions.JsonGenerationException;
+import exceptions.JSONGenerationException;
+import org.json.JSONObject;
 import utils.Constants;
-import utils.Container;
-import utils.SimpleContainer;
 
 import java.util.UUID;
 
@@ -34,10 +33,10 @@ public abstract class BaseMessage
         return UUID.randomUUID().toString();
     }
 
-    public Container toContainer()
-      throws JsonGenerationException
+    public JSONObject toJSON()
+      throws JSONGenerationException
     {
-        SimpleContainer info = new SimpleContainer();
+        JSONObject info = new JSONObject();
         info.put(Constants.JSON_MESSAGE_TYPE, getType().toString());
         info.put(Constants.JSON_MESSAGE_ID, getId());
 

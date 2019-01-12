@@ -1,4 +1,4 @@
-package websocket;
+package socket;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
@@ -8,24 +8,32 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import socket.handler.ExceptionHandler;
+import socket.handler.InboundHandler;
+import socket.handler.MessageDecoderFactory;
+import socket.handler.MessageEncoder;
+import socket.handler.WelcomeHandler;
 
 import java.io.Closeable;
 import java.net.InetSocketAddress;
 
 public class ServerSocket implements Closeable
 {
-    private final int            mPort;
-    private final InboundHandler mInboundHandler;
+    private final MessageDecoderFactory mMessageDecoderFactory;
+    private final int                   mPort;
+    private final InboundHandler        mInboundHandler;
 
     private NioEventLoopGroup mGroup;
 
     @Inject
     public ServerSocket(
       InboundHandler inboundHandler,
+      MessageDecoderFactory messageDecoderFactory,
       @Assisted int port
     )
     {
         mInboundHandler = inboundHandler;
+        mMessageDecoderFactory = messageDecoderFactory;
         mPort = port;
     }
 
@@ -54,7 +62,11 @@ public class ServerSocket implements Closeable
               @Override
               public void initChannel(SocketChannel ch)
               {
+                  ch.pipeline().addLast(new MessageEncoder());
+                  ch.pipeline().addLast(mMessageDecoderFactory.create());
+                  ch.pipeline().addLast(new WelcomeHandler());
                   ch.pipeline().addLast(mInboundHandler);
+                  ch.pipeline().addLast(new ExceptionHandler());
               }
           });
 

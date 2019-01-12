@@ -4,9 +4,11 @@ public class Constants
 {
     public static final String SOCKET_SERVICE_NAME = "socket-service";
 
-    public static final String MESSAGE_TYPE_ERROR                 = "error";
-    public static final String MESSAGE_TYPE_MERTHOD_CALL_REQUEST  = "methodCallRequest";
-    public static final String MESSAGE_TYPE_MERTHOD_CALL_RESPONSE = "methodCallResponse";
+    public static final String MESSAGE_TYPE_ERROR                = "error";
+    public static final String MESSAGE_TYPE_METHOD_CALL_REQUEST  = "methodCallRequest";
+    public static final String MESSAGE_TYPE_METHOD_CALL_RESPONSE = "methodCallResponse";
+    public static final String MESSAGE_TYPE_WELCOME_REQUEST      = "welcomeRequest";
+    public static final String MESSAGE_TYPE_WELCOME_RESPONSE     = "welcomeResponse";
 
     public static final String JSON_MESSAGE_ID   = "messageId";
     public static final String JSON_MESSAGE_TYPE = "messageType";

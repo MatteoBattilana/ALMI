@@ -1,19 +1,24 @@
 package message.request;
 
 import exceptions.BlockingRequestException;
-import exceptions.InvalidRequestException;
+import exceptions.MalformedRequestException;
 import message.BaseMessage;
 import message.response.ErrorMessageResponse;
 import org.json.JSONObject;
 
 public class ErrorMessageRequest extends ErrorMessageResponse
 {
-    public ErrorMessageRequest(String messageId, Throwable throwable)
+    private ErrorMessageRequest(String messageId, Throwable throwable)
     {
         super(messageId, throwable);
     }
 
-    public static ErrorMessageRequest parse(JSONObject json) throws InvalidRequestException
+    public ErrorMessageRequest(Throwable throwable)
+    {
+        this(BaseMessage.randomId(), throwable);
+    }
+
+    public static ErrorMessageRequest parse(JSONObject json) throws MalformedRequestException
     {
         ErrorMessageResponse messageResponse = ErrorMessageResponse.parse(json);
         return new ErrorMessageRequest(messageResponse.getId(), messageResponse.getThrowable());

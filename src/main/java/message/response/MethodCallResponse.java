@@ -2,12 +2,11 @@ package message.response;
 
 import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
-import exceptions.InvalidRequestException;
-import exceptions.JsonGenerationException;
+import exceptions.MalformedRequestException;
+import exceptions.JSONGenerationException;
 import message.BaseMessage;
 import message.MessageType;
 import utils.Constants;
-import utils.Container;
 import utils.TypeUtils;
 import org.json.JSONObject;
 
@@ -17,9 +16,9 @@ public class MethodCallResponse extends BaseMessage
 {
     private final Serializable mReturnValue;
 
-    public MethodCallResponse(String id, Serializable returnValue)
+    public MethodCallResponse(String requestId, Serializable returnValue)
     {
-        super(MessageType.METHOD_CALL_RESPONSE, id);
+        super(MessageType.METHOD_CALL_RESPONSE, requestId);
         mReturnValue = returnValue;
     }
 
@@ -37,18 +36,18 @@ public class MethodCallResponse extends BaseMessage
     }
 
     @Override
-    public Container toContainer()
-      throws JsonGenerationException
+    public JSONObject toJSON()
+      throws JSONGenerationException
     {
         try
         {
-            Container json = super.toContainer();
+            JSONObject json = super.toJSON();
             json.put(Constants.JSON_RETURN_VALUE, TypeUtils.toString(mReturnValue));
             return json;
         }
         catch(ClassConversionException e)
         {
-            throw new JsonGenerationException(e);
+            throw new JSONGenerationException(e);
         }
     }
 
@@ -60,7 +59,7 @@ public class MethodCallResponse extends BaseMessage
     }
 
     public static MethodCallResponse parse(JSONObject json)
-      throws InvalidRequestException
+      throws MalformedRequestException
     {
         try
         {
@@ -71,7 +70,7 @@ public class MethodCallResponse extends BaseMessage
         }
         catch(ClassConversionException e)
         {
-            throw new InvalidRequestException(json.toString(), e);
+            throw new MalformedRequestException(json.toString(), e);
         }
     }
 }

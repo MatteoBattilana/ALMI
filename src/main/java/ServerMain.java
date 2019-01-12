@@ -1,10 +1,10 @@
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import guice.AlmiModules;
-import websocket.ServerSocketService;
-import websocket.ServerSocketServiceFactory;
+import socket.ServerSocketService;
+import socket.ServerSocketServiceFactory;
 
-public class Main
+public class ServerMain
 {
     public static void main(String [] args)
     {

@@ -1,18 +1,18 @@
 package exceptions;
 
-public class InvalidRequestException extends AlmiException
+public class MalformedRequestException extends AlmiException
 {
-    public InvalidRequestException(String json)
+    public MalformedRequestException(String json)
     {
         super(getErrorMessage(json));
     }
 
-    public InvalidRequestException(Throwable throwable)
+    public MalformedRequestException(Throwable throwable)
     {
         super(throwable);
     }
 
-    public InvalidRequestException(String json, Throwable throwable)
+    public MalformedRequestException(String json, Throwable throwable)
     {
         super(getErrorMessage(json), throwable);
     }

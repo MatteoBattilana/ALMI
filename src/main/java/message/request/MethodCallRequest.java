@@ -1,13 +1,12 @@
 package message.request;
 
 import exceptions.ClassConversionException;
-import exceptions.InvalidRequestException;
-import exceptions.JsonGenerationException;
+import exceptions.MalformedRequestException;
+import exceptions.JSONGenerationException;
 import message.BaseMessage;
 import message.MessageType;
 import message.response.MethodCallResponse;
 import utils.Constants;
-import utils.Container;
 import utils.TypeUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -21,11 +20,16 @@ public class MethodCallRequest extends BaseMessage
     private final String       mMethodName;
     private final List<String> mMethodParameters;
 
-    public MethodCallRequest(String methodName, List<String> params)
+    private MethodCallRequest(String requestId, String methodName, List<String> params)
     {
-        super(MessageType.METHOD_CALL_REQUEST, BaseMessage.randomId());
+        super(MessageType.METHOD_CALL_REQUEST, requestId);
         this.mMethodName = methodName;
         this.mMethodParameters = params;
+    }
+
+    public MethodCallRequest(String methodName, List<String> params)
+    {
+       this(BaseMessage.randomId(), methodName, params);
     }
 
     public String getMethodName()
@@ -34,7 +38,7 @@ public class MethodCallRequest extends BaseMessage
     }
 
     public List<Serializable> getMethodParameters()
-      throws InvalidRequestException
+      throws MalformedRequestException
     {
         try
         {
@@ -47,15 +51,15 @@ public class MethodCallRequest extends BaseMessage
         }
         catch(ClassConversionException e)
         {
-            throw new InvalidRequestException(e);
+            throw new MalformedRequestException(e);
         }
     }
 
     @Override
-    public Container toContainer()
-      throws JsonGenerationException
+    public JSONObject toJSON()
+      throws JSONGenerationException
     {
-        Container json = super.toContainer();
+        JSONObject json = super.toJSON();
         json.put(Constants.JSON_METHOD_NAME, mMethodName);
         json.put(Constants.JSON_PARAMETERS, mMethodParameters);
 
@@ -72,6 +76,7 @@ public class MethodCallRequest extends BaseMessage
     public static MethodCallRequest parse(JSONObject json)
     {
         String methodName = json.getString(Constants.JSON_METHOD_NAME);
+        String requestId = json.getString(Constants.JSON_MESSAGE_ID);
         List<String> params = new ArrayList<>();
         JSONArray jsonParams = json.getJSONArray(Constants.JSON_PARAMETERS);
         for(int i = 0; i < jsonParams.length(); i++)
@@ -85,6 +90,6 @@ public class MethodCallRequest extends BaseMessage
             }
         }
 
-        return new MethodCallRequest(methodName, params);
+        return new MethodCallRequest(requestId, methodName, params);
     }
 }

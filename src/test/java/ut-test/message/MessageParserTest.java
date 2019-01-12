@@ -2,7 +2,7 @@ package message;
 
 import exceptions.AlmiException;
 import exceptions.BlockingRequestException;
-import exceptions.InvalidRequestException;
+import exceptions.MalformedRequestException;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
 import utils.TypeUtils;
@@ -10,14 +10,14 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MessageRequestParserTest
+public class MessageParserTest
 {
-    private MessageRequestParser mMessageRequestParser;
+    private MessageParser mMessageParser;
 
     @Before
     public void setup()
     {
-        mMessageRequestParser = new MessageRequestParser();
+        mMessageParser = new MessageParser();
     }
 
     @Test (expected = BlockingRequestException.class)
@@ -30,7 +30,7 @@ public class MessageRequestParserTest
           "   \"exception\":\"" + TypeUtils.toString(new AlmiException("Error message!")) + "\"" +
           "}";
 
-        BaseMessage parsed = mMessageRequestParser.parseRequest(json);
+        BaseMessage parsed = mMessageParser.parseMessage(json);
         Assert.assertTrue(parsed instanceof ErrorMessageRequest);
         parsed.generateResponse();
     }
@@ -47,12 +47,12 @@ public class MessageRequestParserTest
           "   \"parameters\":[]" +
           "}";
 
-        BaseMessage parsed = mMessageRequestParser.parseRequest(json);
+        BaseMessage parsed = mMessageParser.parseMessage(json);
         Assert.assertTrue(parsed instanceof MethodCallRequest);
         parsed.generateResponse();
     }
 
-    @Test (expected = InvalidRequestException.class)
+    @Test (expected = MalformedRequestException.class)
     public void invalidJson() throws Exception
     {
         String json = "wrong-json" +
@@ -64,6 +64,6 @@ public class MessageRequestParserTest
           "   \"parameters\":[]" +
           "}";
 
-        mMessageRequestParser.parseRequest(json);
+        mMessageParser.parseMessage(json);
     }
 }

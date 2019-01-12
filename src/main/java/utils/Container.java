@@ -1,27 +1,33 @@
 package utils;
 
-import exceptions.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import exceptions.JSONGenerationException;
+import exceptions.JSONParsingException;
 import exceptions.MissingKeyException;
 
-public interface Container<K>
+import java.util.List;
+
+public interface Container
 {
-    void put(K key, Object value);
+    void put(String key, Object value);
     boolean isEmpty();
-    boolean has(K key);
+    boolean has(String key);
 
-    String getString(K key)
+    String getString(String key)
       throws MissingKeyException;
-    String optString(K key, String def);
-    int getInt(K key)
+    String optString(String key, String def);
+    int getInt(String key)
       throws MissingKeyException;
-    int optInt(K key, int def);
-    long getLong(K key)
+    int optInt(String key, int def);
+    long getLong(String key)
       throws MissingKeyException;
-    long optLong(K key, Long def);
-    double getDouble(K key)
+    long optLong(String key, Long def);
+    double getDouble(String key)
       throws MissingKeyException;
-    double optDouble(K key, double def);
-
+    double optDouble(String key, double def);
+    List<String> getStringList(String key)
+      throws MissingKeyException;
+    List<String> optStringList(String key, List<String> def);
     String toJSON()
-      throws JsonGenerationException;
+      throws JsonGenerationException, JSONGenerationException;
 }

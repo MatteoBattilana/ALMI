@@ -2,8 +2,8 @@ package message.response;
 
 import exceptions.AlmiException;
 import message.MessageType;
-import utils.TypeUtils;
 import org.json.JSONObject;
+import utils.TypeUtils;
 import org.junit.Assert;
 import org.junit.Test;
 

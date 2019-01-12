@@ -2,12 +2,11 @@ package message.response;
 
 import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
-import exceptions.InvalidRequestException;
-import exceptions.JsonGenerationException;
+import exceptions.MalformedRequestException;
+import exceptions.JSONGenerationException;
 import message.BaseMessage;
 import message.MessageType;
 import utils.Constants;
-import utils.Container;
 import utils.TypeUtils;
 import org.json.JSONObject;
 
@@ -17,15 +16,10 @@ public class ErrorMessageResponse extends BaseMessage
 {
     private final Throwable mThrowable;
 
-    public ErrorMessageResponse(String messageId, Throwable throwable)
+    public ErrorMessageResponse(String requestId, Throwable throwable)
     {
-        super(MessageType.ERROR, messageId);
+        super(MessageType.ERROR, requestId);
         mThrowable = throwable;
-    }
-
-    public ErrorMessageResponse(Throwable throwable)
-    {
-        this(UUID.randomUUID().toString(), throwable);
     }
 
     public Throwable getThrowable()
@@ -34,18 +28,18 @@ public class ErrorMessageResponse extends BaseMessage
     }
 
     @Override
-    public Container toContainer()
-      throws JsonGenerationException
+    public JSONObject toJSON()
+      throws JSONGenerationException
     {
         try
         {
-            Container json = super.toContainer();
+            JSONObject json = super.toJSON();
             json.put(Constants.JSON_EXCEPTION, TypeUtils.toString(mThrowable.getMessage()));
             return json;
         }
         catch(ClassConversionException e)
         {
-            throw new JsonGenerationException(e);
+            throw new JSONGenerationException(e);
         }
     }
 
@@ -57,7 +51,7 @@ public class ErrorMessageResponse extends BaseMessage
     }
 
     public static ErrorMessageResponse parse(JSONObject json)
-      throws InvalidRequestException
+      throws MalformedRequestException
     {
         try
         {
@@ -70,7 +64,7 @@ public class ErrorMessageResponse extends BaseMessage
         }
         catch(ClassConversionException e)
         {
-            throw new InvalidRequestException(json.toString(), e);
+            throw new MalformedRequestException(json.toString(), e);
         }
     }
 }

@@ -1,12 +1,15 @@
 package message;
 
-import com.google.common.base.Function;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import exceptions.AlmiException;
-import exceptions.InvalidRequestException;
+import exceptions.MalformedRequestException;
+import exceptions.MissingParserException;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
+import message.request.WelcomeRequest;
+import message.response.MethodCallResponse;
+import message.response.WelcomeResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Constants;
@@ -15,7 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Singleton
-public class MessageRequestParser
+public class MessageParser
 {
     private Map<String, CheckedFunction<JSONObject, BaseMessage>> parserList;
 
@@ -23,11 +26,11 @@ public class MessageRequestParser
     public interface CheckedFunction<T, R>
     {
         R apply(T t)
-          throws InvalidRequestException;
+          throws MalformedRequestException;
     }
 
     @Inject
-    public MessageRequestParser()
+    public MessageParser()
     {
         populateParserList();
     }
@@ -36,10 +39,13 @@ public class MessageRequestParser
     {
         parserList = new HashMap<>();
         parserList.put(Constants.MESSAGE_TYPE_ERROR, ErrorMessageRequest::parse);
-        parserList.put(Constants.MESSAGE_TYPE_MERTHOD_CALL_REQUEST, MethodCallRequest::parse);
+        parserList.put(Constants.MESSAGE_TYPE_METHOD_CALL_REQUEST, MethodCallRequest::parse);
+        parserList.put(Constants.MESSAGE_TYPE_METHOD_CALL_RESPONSE, MethodCallResponse::parse);
+        parserList.put(Constants.MESSAGE_TYPE_WELCOME_REQUEST, WelcomeRequest::parse);
+        parserList.put(Constants.MESSAGE_TYPE_WELCOME_RESPONSE, WelcomeResponse::parse);
     }
 
-    public BaseMessage parseRequest(String json)
+    public BaseMessage parseMessage(String json)
       throws AlmiException
     {
         try
@@ -49,11 +55,18 @@ public class MessageRequestParser
               jsonObject.getString(Constants.JSON_MESSAGE_TYPE)
             );
 
-            return parser.apply(jsonObject);
+            if(parser != null)
+            {
+                return parser.apply(jsonObject);
+            }
+            else
+            {
+                throw new MissingParserException(jsonObject.getString(Constants.JSON_MESSAGE_TYPE));
+            }
         }
         catch(JSONException e)
         {
-            throw new InvalidRequestException(json, e);
+            throw new MalformedRequestException(json, e);
         }
     }
 }

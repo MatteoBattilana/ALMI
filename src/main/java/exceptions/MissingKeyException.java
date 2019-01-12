@@ -1,6 +1,6 @@
 package exceptions;
 
-public class MissingKeyException extends AlmiException
+public class MissingKeyException extends RuntimeException
 {
     public MissingKeyException(String key)
     {
