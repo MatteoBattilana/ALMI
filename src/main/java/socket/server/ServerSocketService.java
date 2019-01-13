@@ -1,14 +1,13 @@
-package socket;
+package socket.server;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import utils.Constants;
+import utils.Service;
 
 public class ServerSocketService implements Service, Runnable
 {
     private final ServerSocket mServerSocket;
-
-    private Thread mThread;
 
     @Inject
     public ServerSocketService(
@@ -22,11 +21,10 @@ public class ServerSocketService implements Service, Runnable
     @Override
     public void start()
     {
-        mThread = new Thread(
+        new Thread(
           this,
           Constants.SOCKET_SERVICE_NAME
-        );
-        mThread.start();
+        ).start();
     }
 
     @Override

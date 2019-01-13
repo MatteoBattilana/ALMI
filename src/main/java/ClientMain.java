@@ -1,31 +1,31 @@
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.util.Scanner;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import exceptions.AlmiException;
+import guice.AlmiModules;
+import message.request.ErrorMessageRequest;
+import message.request.WelcomeRequest;
+import socket.client.ClientSocket;
+import socket.client.ClientSocketFactory;
+import socket.client.ClientSocketService;
+import socket.client.ClientSocketServiceFactory;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 public class ClientMain {
-    private Socket socket;
-    private Scanner scanner;
-    private ClientMain(InetAddress serverAddress, int serverPort) throws Exception {
-        this.socket = new Socket(serverAddress, serverPort);
-        this.scanner = new Scanner(System.in);
-    }
-    private void start() throws IOException {
-        String input;
-        while (true) {
-            input = scanner.nextLine();
-            PrintWriter out = new PrintWriter(this.socket.getOutputStream(), true);
-            out.println(input);
-            out.flush();
+    public static void main(String [] args) throws Exception
+    {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Injector injector = Guice.createInjector(new AlmiModules());
+
+        ClientSocketServiceFactory clientSocketServiceFactory = injector.getInstance(ClientSocketServiceFactory.class);
+        ClientSocketService localhost = clientSocketServiceFactory.create("localhost", 11111);
+        localhost.start();
+
+        while(true)
+        {
+            br.readLine();
+            localhost.writeMessage(new WelcomeRequest());
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        ClientMain client = new ClientMain(
-          InetAddress.getByName("localhost"),
-          11111);
-
-        System.out.println("\r\nConnected to Server: " + client.socket.getInetAddress());
-        client.start();
     }
 }

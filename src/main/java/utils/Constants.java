@@ -2,6 +2,8 @@ package utils;
 
 public class Constants
 {
+    public static final int MAX_FRAME_SIZE = 512 * 1024;
+
     public static final String SOCKET_SERVICE_NAME = "socket-service";
 
     public static final String MESSAGE_TYPE_ERROR                = "error";

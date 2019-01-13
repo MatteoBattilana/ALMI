@@ -28,7 +28,6 @@ public class WelcomeRequest extends BaseMessage
     @Override
     public BaseMessage generateResponse()
     {
-        // calculate return value
         return new WelcomeResponse(getId());
     }
 

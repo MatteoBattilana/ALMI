@@ -1,4 +1,4 @@
-package socket;
+package utils;
 
 public interface Service
 {

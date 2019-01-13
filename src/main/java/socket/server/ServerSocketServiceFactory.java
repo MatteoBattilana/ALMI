@@ -1,4 +1,4 @@
-package socket;
+package socket.server;
 
 public interface ServerSocketServiceFactory
 {

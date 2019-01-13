@@ -2,15 +2,13 @@ package message.response;
 
 import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
-import exceptions.MalformedRequestException;
 import exceptions.JSONGenerationException;
+import exceptions.MalformedRequestException;
 import message.BaseMessage;
 import message.MessageType;
+import org.json.JSONObject;
 import utils.Constants;
 import utils.TypeUtils;
-import org.json.JSONObject;
-
-import java.util.UUID;
 
 public class ErrorMessageResponse extends BaseMessage
 {

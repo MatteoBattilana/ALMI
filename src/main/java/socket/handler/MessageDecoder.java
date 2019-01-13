@@ -31,6 +31,7 @@ public class MessageDecoder extends ByteToMessageDecoder
     {
         try
         {
+            System.out.println("Received: " + in.toString(CharsetUtil.UTF_8));
             out.add(mMessageParser.parseMessage(in.toString(CharsetUtil.UTF_8)));
         }
         finally
