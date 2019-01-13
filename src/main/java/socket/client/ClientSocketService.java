@@ -3,6 +3,7 @@ package socket.client;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import message.BaseMessage;
+import message.Message;
 import utils.Constants;
 import utils.Service;
 
@@ -20,7 +21,7 @@ public class ClientSocketService implements Service, Runnable
         mClientSocket = clientSocketFactory.create(host, port);
     }
 
-    public void writeMessage(BaseMessage message)
+    public void writeMessage(Message message)
     {
         mClientSocket.writeMessage(message);
     }

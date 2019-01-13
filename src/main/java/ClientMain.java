@@ -3,9 +3,7 @@ import com.google.inject.Injector;
 import exceptions.AlmiException;
 import guice.AlmiModules;
 import message.request.ErrorMessageRequest;
-import message.request.WelcomeRequest;
-import socket.client.ClientSocket;
-import socket.client.ClientSocketFactory;
+import message.request.HandshakeRequest;
 import socket.client.ClientSocketService;
 import socket.client.ClientSocketServiceFactory;
 
@@ -25,7 +23,7 @@ public class ClientMain {
         while(true)
         {
             br.readLine();
-            localhost.writeMessage(new WelcomeRequest());
+            localhost.writeMessage(new HandshakeRequest());
         }
     }
 }

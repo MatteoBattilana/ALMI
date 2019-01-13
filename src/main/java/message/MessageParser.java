@@ -7,9 +7,9 @@ import exceptions.MalformedRequestException;
 import exceptions.MissingParserException;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
-import message.request.WelcomeRequest;
+import message.request.HandshakeRequest;
 import message.response.MethodCallResponse;
-import message.response.WelcomeResponse;
+import message.response.HandshakeResponse;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Constants;
@@ -20,7 +20,7 @@ import java.util.Map;
 @Singleton
 public class MessageParser
 {
-    private Map<String, CheckedFunction<JSONObject, BaseMessage>> parserList;
+    private Map<String, CheckedFunction<JSONObject, Message>> parserList;
 
     @FunctionalInterface
     public interface CheckedFunction<T, R>
@@ -41,17 +41,17 @@ public class MessageParser
         parserList.put(Constants.MESSAGE_TYPE_ERROR, ErrorMessageRequest::parse);
         parserList.put(Constants.MESSAGE_TYPE_METHOD_CALL_REQUEST, MethodCallRequest::parse);
         parserList.put(Constants.MESSAGE_TYPE_METHOD_CALL_RESPONSE, MethodCallResponse::parse);
-        parserList.put(Constants.MESSAGE_TYPE_WELCOME_REQUEST, WelcomeRequest::parse);
-        parserList.put(Constants.MESSAGE_TYPE_WELCOME_RESPONSE, WelcomeResponse::parse);
+        parserList.put(Constants.MESSAGE_TYPE_HANDSHAKE_REQUEST, HandshakeRequest::parse);
+        parserList.put(Constants.MESSAGE_TYPE_HANDSHAKE_RESPONSE, HandshakeResponse::parse);
     }
 
-    public BaseMessage parseMessage(String json)
+    public Message parseMessage(String json)
       throws AlmiException
     {
         try
         {
             JSONObject jsonObject = new JSONObject(json);
-            CheckedFunction<JSONObject, BaseMessage> parser = parserList.get(
+            CheckedFunction<JSONObject, Message> parser = parserList.get(
               jsonObject.getString(Constants.JSON_MESSAGE_TYPE)
             );
 

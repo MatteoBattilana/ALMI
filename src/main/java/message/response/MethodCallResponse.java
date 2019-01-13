@@ -1,6 +1,5 @@
 package message.response;
 
-import exceptions.BlockingRequestException;
 import exceptions.ClassConversionException;
 import exceptions.MalformedRequestException;
 import exceptions.JSONGenerationException;
@@ -52,10 +51,9 @@ public class MethodCallResponse extends BaseMessage
     }
 
     @Override
-    public BaseMessage generateResponse()
-      throws BlockingRequestException
+    public BaseMessage interpret()
     {
-        throw new BlockingRequestException(getType());
+        return new StubResponse(getId());
     }
 
     public static MethodCallResponse parse(JSONObject json)

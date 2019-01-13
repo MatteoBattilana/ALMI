@@ -1,10 +1,11 @@
 package message;
 
 import exceptions.AlmiException;
-import exceptions.BlockingRequestException;
 import exceptions.MalformedRequestException;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
+import message.response.MethodCallResponse;
+import message.response.StubResponse;
 import utils.TypeUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +21,7 @@ public class MessageParserTest
         mMessageParser = new MessageParser();
     }
 
-    @Test (expected = BlockingRequestException.class)
+    @Test
     public void errorMessage() throws Exception
     {
         String json = "" +
@@ -30,9 +31,10 @@ public class MessageParserTest
           "   \"exception\":\"" + TypeUtils.toString(new AlmiException("Error message!")) + "\"" +
           "}";
 
-        BaseMessage parsed = mMessageParser.parseMessage(json);
+        Message parsed = mMessageParser.parseMessage(json);
         Assert.assertTrue(parsed instanceof ErrorMessageRequest);
-        parsed.generateResponse();
+        Message interpret = parsed.interpret();
+        Assert.assertTrue(interpret instanceof StubResponse);
     }
 
     @Test
@@ -47,9 +49,10 @@ public class MessageParserTest
           "   \"parameters\":[]" +
           "}";
 
-        BaseMessage parsed = mMessageParser.parseMessage(json);
+        Message parsed = mMessageParser.parseMessage(json);
         Assert.assertTrue(parsed instanceof MethodCallRequest);
-        parsed.generateResponse();
+        Message interpret = parsed.interpret();
+        Assert.assertTrue(interpret instanceof MethodCallResponse);
     }
 
     @Test (expected = MalformedRequestException.class)

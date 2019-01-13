@@ -1,33 +1,73 @@
 package message.request;
 
-import exceptions.BlockingRequestException;
+import exceptions.ClassConversionException;
+import exceptions.JSONGenerationException;
 import exceptions.MalformedRequestException;
 import message.BaseMessage;
-import message.response.ErrorMessageResponse;
+import message.Message;
+import message.MessageType;
+import message.response.StubResponse;
 import org.json.JSONObject;
+import utils.Constants;
+import utils.TypeUtils;
 
-public class ErrorMessageRequest extends ErrorMessageResponse
+public class ErrorMessageRequest extends BaseMessage
 {
-    private ErrorMessageRequest(String messageId, Throwable throwable)
+    private final Throwable mThrowable;
+
+    public ErrorMessageRequest(String requestId, Throwable throwable)
     {
-        super(messageId, throwable);
+        super(MessageType.ERROR, requestId);
+        mThrowable = throwable;
     }
 
     public ErrorMessageRequest(Throwable throwable)
     {
-        this(BaseMessage.randomId(), throwable);
+        this(Message.randomId(), throwable);
     }
 
-    public static ErrorMessageRequest parse(JSONObject json) throws MalformedRequestException
+    public Throwable getThrowable()
     {
-        ErrorMessageResponse messageResponse = ErrorMessageResponse.parse(json);
-        return new ErrorMessageRequest(messageResponse.getId(), messageResponse.getThrowable());
+        return mThrowable;
     }
 
     @Override
-    public BaseMessage generateResponse()
-      throws BlockingRequestException
+    public JSONObject toJSON()
+      throws JSONGenerationException
     {
-        throw new BlockingRequestException(getType());
+        try
+        {
+            JSONObject json = super.toJSON();
+            json.put(Constants.JSON_EXCEPTION, TypeUtils.toString(mThrowable.getMessage()));
+            return json;
+        }
+        catch(ClassConversionException e)
+        {
+            throw new JSONGenerationException(e);
+        }
+    }
+
+    @Override
+    public BaseMessage interpret()
+    {
+        return new StubResponse(getId());
+    }
+
+    public static ErrorMessageRequest parse(JSONObject json)
+      throws MalformedRequestException
+    {
+        try
+        {
+            String messageId = json.getString(Constants.JSON_MESSAGE_ID);
+            Throwable ex = TypeUtils.convertInstanceOfObject(
+              TypeUtils.fromString(json.getString(Constants.JSON_EXCEPTION)),
+              Throwable.class
+            );
+            return new ErrorMessageRequest(messageId, ex);
+        }
+        catch(ClassConversionException e)
+        {
+            throw new MalformedRequestException(json.toString(), e);
+        }
     }
 }

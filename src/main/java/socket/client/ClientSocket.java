@@ -9,6 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import message.BaseMessage;
+import message.Message;
 import socket.handler.SocketChannelInitializer;
 
 import java.io.Closeable;
@@ -58,7 +59,7 @@ public class ClientSocket implements Closeable
         mGroup.shutdownGracefully().syncUninterruptibly();
     }
 
-    public void writeMessage(BaseMessage message)
+    public void writeMessage(Message message)
     {
         mChannelFuture.channel().writeAndFlush(message);
     }

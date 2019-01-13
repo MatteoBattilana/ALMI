@@ -1,17 +1,16 @@
 package socket;
 
 import exceptions.AlmiException;
-import exceptions.BlockingRequestException;
 import io.netty.channel.embedded.EmbeddedChannel;
 import message.BaseMessage;
+import message.Message;
 import message.MessageParser;
 import message.request.ErrorMessageRequest;
+import message.response.StubResponse;
 import org.junit.Assert;
 import org.junit.Test;
 import socket.handler.MessageDecoder;
 import socket.handler.MessageEncoder;
-
-import static org.junit.Assert.fail;
 
 public class MessageEncoderTest
 {
@@ -20,19 +19,13 @@ public class MessageEncoderTest
     {
         EmbeddedChannel channel = new EmbeddedChannel(new MessageEncoder(), new MessageDecoder(new MessageParser()));
 
-        BaseMessage error = new ErrorMessageRequest(new AlmiException("Test!"));
+        Message error = new ErrorMessageRequest(new AlmiException("Test!"));
         channel.writeInbound(error);
 
-        BaseMessage returnedMessage = channel.readInbound();
-        try
-        {
-            returnedMessage.generateResponse();
-            fail("BlockingRequestException not thrown!");
-        }
-        catch(BlockingRequestException ignored)
-        {
-        }
+        Message returnedMessage = channel.readInbound();
         Assert.assertTrue(returnedMessage instanceof ErrorMessageRequest);
+        Message interpret = returnedMessage.interpret();
+        Assert.assertTrue(interpret instanceof StubResponse);
     }
 
 }

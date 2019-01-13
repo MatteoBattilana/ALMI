@@ -4,6 +4,7 @@ import exceptions.ClassConversionException;
 import exceptions.MalformedRequestException;
 import exceptions.JSONGenerationException;
 import message.BaseMessage;
+import message.Message;
 import message.MessageType;
 import message.response.MethodCallResponse;
 import utils.Constants;
@@ -67,7 +68,7 @@ public class MethodCallRequest extends BaseMessage
     }
 
     @Override
-    public BaseMessage generateResponse()
+    public Message interpret()
     {
         // calculate return value
         return new MethodCallResponse(getId(), 10);

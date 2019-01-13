@@ -1,8 +1,9 @@
 package message.request;
 
 import exceptions.AlmiException;
-import exceptions.BlockingRequestException;
+import message.BaseMessage;
 import message.MessageType;
+import message.response.StubResponse;
 import utils.TypeUtils;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -10,7 +11,7 @@ import org.junit.Test;
 
 public class ErrorMessageRequestTest
 {
-    @Test (expected = BlockingRequestException.class)
+    @Test
     public void requestNoParameter() throws Exception
     {
         String json = "" +
@@ -25,6 +26,7 @@ public class ErrorMessageRequestTest
         Assert.assertTrue(message.getThrowable() instanceof AlmiException);
         Assert.assertEquals("Error message!", message.getThrowable().getMessage());
 
-        message.generateResponse();
+        BaseMessage stub = message.interpret();
+        Assert.assertTrue(stub instanceof StubResponse);
     }
 }

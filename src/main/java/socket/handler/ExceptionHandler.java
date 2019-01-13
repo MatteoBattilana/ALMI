@@ -1,13 +1,20 @@
 package socket.handler;
 
+import exceptions.HandshakeException;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import message.request.ErrorMessageRequest;
 
-public class ExceptionHandler extends ChannelDuplexHandler {
+public class ExceptionHandler extends ChannelDuplexHandler
+{
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
+    {
+        if(cause instanceof HandshakeException)
+        {
+            ctx.close();
+        }
         ctx.writeAndFlush(new ErrorMessageRequest(cause));
     }
 

@@ -6,8 +6,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.util.CharsetUtil;
 import message.MessageParser;
-import message.request.ErrorMessageRequest;
-import message.response.ErrorMessageResponse;
 
 import java.util.List;
 
