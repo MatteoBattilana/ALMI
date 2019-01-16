@@ -1,13 +1,11 @@
 package message;
 
-import utils.Constants;
-
 import java.io.Serializable;
 import java.util.UUID;
 
 public abstract class Message implements Serializable
 {
-    private final String      mId;
+    private final String mId;
 
     public Message(String id)
     {

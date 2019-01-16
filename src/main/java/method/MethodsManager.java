@@ -14,7 +14,7 @@ import java.util.*;
 @Singleton
 public class MethodsManager
 {
-    private final Map<String, MethodHandler> mMethodsMap;
+    private final Map<String, MethodDescriptor> mMethodsMap;
 
     @Inject
     public MethodsManager()
@@ -22,26 +22,26 @@ public class MethodsManager
         mMethodsMap = new HashMap<>();
     }
 
-    private void addMethod(MethodHandler methodHandler)
+    private void addMethod(MethodDescriptor methodDescriptor)
       throws MethodAlreadyExistsException
     {
-        if(mMethodsMap.containsKey(methodHandler.getRemoteName()))
+        if(mMethodsMap.containsKey(methodDescriptor.getRemoteName()))
         {
-            throw new MethodAlreadyExistsException(methodHandler);
+            throw new MethodAlreadyExistsException(methodDescriptor);
         }
-        mMethodsMap.put(methodHandler.getRemoteName(), methodHandler);
+        mMethodsMap.put(methodDescriptor.getRemoteName(), methodDescriptor);
     }
 
     public void addMethod(Object instance, Method method, String remoteName)
       throws MethodAlreadyExistsException
     {
-        addMethod(new MethodHandler(instance, method, remoteName));
+        addMethod(new MethodDescriptor(instance, method, remoteName));
     }
 
     public Object execute(String methodName, Object... param)
       throws AlmiException
     {
-        MethodHandler method = mMethodsMap.get(methodName);
+        MethodDescriptor method = mMethodsMap.get(methodName);
         if(method != null)
         {
             if(method.getMethod().getParameterCount() == param.length)

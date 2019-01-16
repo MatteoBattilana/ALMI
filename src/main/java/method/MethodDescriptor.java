@@ -2,13 +2,13 @@ package method;
 
 import java.lang.reflect.Method;
 
-public class MethodHandler
+public class MethodDescriptor
 {
     private final Object mInstance;
     private final Method mMethod;
     private final String mRemoteName;
 
-    public MethodHandler(Object instance, Method method, String remoteName)
+    public MethodDescriptor(Object instance, Method method, String remoteName)
     {
         mInstance = instance;
         mMethod = method;
@@ -41,7 +41,7 @@ public class MethodHandler
         {
             return false;
         }
-        MethodHandler that = (MethodHandler) o;
+        MethodDescriptor that = (MethodDescriptor) o;
         return mRemoteName.equals(that.getRemoteName());
     }
 

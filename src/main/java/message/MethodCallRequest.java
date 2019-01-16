@@ -1,16 +1,14 @@
 package message;
 
-import message.BaseMessage;
-
 import java.io.Serializable;
 import java.util.List;
 
 public class MethodCallRequest extends BaseMessage
 {
-    private final String       mMethodName;
+    private final String             mMethodName;
     private final List<Serializable> mMethodParameters;
 
-    private MethodCallRequest(String requestId, String methodName, List<Serializable> params)
+    public MethodCallRequest(String requestId, String methodName, List<Serializable> params)
     {
         super(requestId);
         this.mMethodName = methodName;
@@ -24,6 +22,6 @@ public class MethodCallRequest extends BaseMessage
 
     public List<Serializable> getMethodParameters()
     {
-       return mMethodParameters;
+        return mMethodParameters;
     }
 }

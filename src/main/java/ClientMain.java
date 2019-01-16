@@ -3,11 +3,13 @@ import com.google.inject.Injector;
 import exceptions.AlmiException;
 import guice.AlmiModules;
 import message.ErrorMessage;
+import message.MethodCallRequest;
 import socket.client.ClientSocketService;
 import socket.client.ClientSocketServiceFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 public class ClientMain {
     public static void main(String [] args) throws Exception
@@ -22,7 +24,7 @@ public class ClientMain {
         while(true)
         {
             br.readLine();
-            localhost.writeMessage(new ErrorMessage(new AlmiException("TEST")));
+            localhost.writeMessage(new MethodCallRequest("uuid", "sum", Arrays.asList(1000,"111111111111111111111111")));
         }
     }
 }

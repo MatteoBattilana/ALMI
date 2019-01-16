@@ -1,6 +1,7 @@
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import guice.AlmiModules;
+import method.MethodsManager;
 import socket.server.ServerSocketService;
 import socket.server.ServerSocketServiceFactory;
 
