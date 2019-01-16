@@ -33,7 +33,7 @@ public class MessageParserTest
 
         Message parsed = mMessageParser.parseMessage(json);
         Assert.assertTrue(parsed instanceof ErrorMessageRequest);
-        Message interpret = parsed.interpret();
+        Message interpret = parsed.generateResponse();
         Assert.assertTrue(interpret instanceof StubResponse);
     }
 
@@ -51,7 +51,7 @@ public class MessageParserTest
 
         Message parsed = mMessageParser.parseMessage(json);
         Assert.assertTrue(parsed instanceof MethodCallRequest);
-        Message interpret = parsed.interpret();
+        Message interpret = parsed.generateResponse();
         Assert.assertTrue(interpret instanceof MethodCallResponse);
     }
 

@@ -8,6 +8,7 @@ import exceptions.MissingParserException;
 import message.request.ErrorMessageRequest;
 import message.request.MethodCallRequest;
 import message.request.HandshakeRequest;
+import message.request.StreamRequest;
 import message.response.MethodCallResponse;
 import message.response.HandshakeResponse;
 import org.json.JSONException;
@@ -43,6 +44,7 @@ public class MessageParser
         parserList.put(Constants.MESSAGE_TYPE_METHOD_CALL_RESPONSE, MethodCallResponse::parse);
         parserList.put(Constants.MESSAGE_TYPE_HANDSHAKE_REQUEST, HandshakeRequest::parse);
         parserList.put(Constants.MESSAGE_TYPE_HANDSHAKE_RESPONSE, HandshakeResponse::parse);
+        parserList.put(Constants.MESSAGE_TYPE_STREAM_REQUEST, StreamRequest::parse);
     }
 
     public Message parseMessage(String json)

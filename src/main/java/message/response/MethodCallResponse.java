@@ -51,7 +51,7 @@ public class MethodCallResponse extends BaseMessage
     }
 
     @Override
-    public BaseMessage interpret()
+    public BaseMessage generateResponse()
     {
         return new StubResponse(getId());
     }

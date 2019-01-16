@@ -26,7 +26,7 @@ public class ErrorMessageRequestTest
         Assert.assertTrue(message.getThrowable() instanceof AlmiException);
         Assert.assertEquals("Error message!", message.getThrowable().getMessage());
 
-        BaseMessage stub = message.interpret();
+        BaseMessage stub = message.generateResponse();
         Assert.assertTrue(stub instanceof StubResponse);
     }
 }

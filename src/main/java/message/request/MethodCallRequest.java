@@ -68,7 +68,7 @@ public class MethodCallRequest extends BaseMessage
     }
 
     @Override
-    public Message interpret()
+    public Message generateResponse()
     {
         // calculate return value
         return new MethodCallResponse(getId(), 10);

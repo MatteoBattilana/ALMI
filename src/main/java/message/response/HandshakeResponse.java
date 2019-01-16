@@ -16,7 +16,7 @@ public class HandshakeResponse extends HandshakeMessage
     }
 
     @Override
-    public HandshakeMessage interpret()
+    public HandshakeMessage generateResponse()
     {
         return new HandshakeResponse(getId());
     }

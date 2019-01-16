@@ -42,5 +42,5 @@ public abstract class Message
         return info;
     }
 
-    public abstract Message interpret();
+    public abstract Message generateResponse();
 }

@@ -2,7 +2,6 @@ package socket;
 
 import exceptions.AlmiException;
 import io.netty.channel.embedded.EmbeddedChannel;
-import message.BaseMessage;
 import message.Message;
 import message.MessageParser;
 import message.request.ErrorMessageRequest;
@@ -24,7 +23,7 @@ public class MessageEncoderTest
 
         Message returnedMessage = channel.readInbound();
         Assert.assertTrue(returnedMessage instanceof ErrorMessageRequest);
-        Message interpret = returnedMessage.interpret();
+        Message interpret = returnedMessage.generateResponse();
         Assert.assertTrue(interpret instanceof StubResponse);
     }
 

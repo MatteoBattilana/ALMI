@@ -14,7 +14,7 @@ public class StubResponse extends BaseMessage
     }
 
     @Override
-    public BaseMessage interpret()
+    public BaseMessage generateResponse()
     {
         return this;
     }

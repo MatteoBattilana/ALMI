@@ -7,15 +7,14 @@ import message.request.ErrorMessageRequest;
 
 public class ExceptionHandler extends ChannelDuplexHandler
 {
-
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
     {
+        ctx.writeAndFlush(new ErrorMessageRequest(cause));
         if(cause instanceof HandshakeException)
         {
             ctx.close();
         }
-        ctx.writeAndFlush(new ErrorMessageRequest(cause));
     }
 
     // @Override
