@@ -1,6 +1,5 @@
 package socket.handler;
 
-import exceptions.AlmiException;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -11,15 +10,15 @@ import message.BaseMessage;
 public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage>
 {
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, BaseMessage msg) throws AlmiException
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseMessage stupidClass)
     {
         try
         {
-            ctx.writeAndFlush(msg.generateResponse());
+            System.out.println("Received " + stupidClass.getClass());
         }
         finally
         {
-            ReferenceCountUtil.release(msg);
+            ReferenceCountUtil.release(stupidClass);
         }
     }
 

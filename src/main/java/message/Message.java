@@ -1,19 +1,16 @@
 package message;
 
-import exceptions.JSONGenerationException;
-import org.json.JSONObject;
 import utils.Constants;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public abstract class Message
+public abstract class Message implements Serializable
 {
-    private final MessageType mMessageType;
     private final String      mId;
 
-    public Message(MessageType messageType, String id)
+    public Message(String id)
     {
-        mMessageType = messageType;
         mId = id;
     }
 
@@ -22,25 +19,8 @@ public abstract class Message
         return mId;
     }
 
-    public MessageType getType()
-    {
-        return mMessageType;
-    }
-
     public static String randomId()
     {
         return UUID.randomUUID().toString();
     }
-
-    public JSONObject toJSON()
-      throws JSONGenerationException
-    {
-        JSONObject info = new JSONObject();
-        info.put(Constants.JSON_MESSAGE_TYPE, getType().toString());
-        info.put(Constants.JSON_MESSAGE_ID, getId());
-
-        return info;
-    }
-
-    public abstract Message generateResponse();
 }

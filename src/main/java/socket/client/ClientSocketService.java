@@ -21,7 +21,7 @@ public class ClientSocketService implements Service, Runnable
         mClientSocket = clientSocketFactory.create(host, port);
     }
 
-    public void writeMessage(Message message)
+    public void writeMessage(Object message)
     {
         mClientSocket.writeMessage(message);
     }

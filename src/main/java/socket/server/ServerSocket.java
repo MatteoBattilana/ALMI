@@ -19,19 +19,14 @@ import java.util.List;
 
 public class ServerSocket implements Closeable
 {
-
-    private final SocketChannelInitializer mSocketChannelInitializer;
-
     private NioEventLoopGroup mGroup;
     private ServerBootstrap   mBootstrap;
 
     @Inject
     public ServerSocket(
-      SocketChannelInitializer socketChannelInitializer,
       @Assisted int port
     )
     {
-        mSocketChannelInitializer = socketChannelInitializer;
         init(port);
     }
 
@@ -41,7 +36,8 @@ public class ServerSocket implements Closeable
         mBootstrap = new ServerBootstrap();
         mBootstrap.group(mGroup)
           .channel(NioServerSocketChannel.class)
-          .childHandler(mSocketChannelInitializer);
+          .localAddress(new InetSocketAddress(port))
+          .childHandler(new SocketChannelInitializer());
     }
 
     @Override
@@ -54,15 +50,8 @@ public class ServerSocket implements Closeable
     public void startListening()
       throws InterruptedException
     {
-        List<Integer> ports = Arrays.asList(Constants.MESSAGE_PORT, Constants.STREAM_PORT);
-        Collection<Channel> channels = new ArrayList<>(ports.size());
-        for (int port : ports) {
-            Channel serverChannel = mBootstrap.bind(port).sync().channel();
-            System.out.println("Started listen on: " + port);
-            channels.add(serverChannel);
-        }
-        for (Channel ch : channels) {
-            ch.closeFuture().sync();
-        }
+        ChannelFuture future = mBootstrap.bind().sync();
+        System.out.println("Started listening on" + future.channel().localAddress().toString());
+        future.channel().closeFuture().sync();
     }
 }

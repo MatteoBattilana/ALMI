@@ -59,7 +59,7 @@ public class ClientSocket implements Closeable
         mGroup.shutdownGracefully().syncUninterruptibly();
     }
 
-    public void writeMessage(Message message)
+    public void writeMessage(Object message)
     {
         mChannelFuture.channel().writeAndFlush(message);
     }
