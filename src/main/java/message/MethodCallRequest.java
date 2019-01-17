@@ -24,4 +24,9 @@ public class MethodCallRequest extends BaseMessage
     {
         return mMethodParameters;
     }
+
+    public <T> T interpret(MessageInterpreter<T> messageInterpreter)
+    {
+        return messageInterpreter.interpret(this);
+    }
 }

@@ -1,7 +1,7 @@
 package utils;
 
-public interface Service
+public interface Service<T>
 {
-    void start();
-    void stop();
+    T start();
+    T stop();
 }

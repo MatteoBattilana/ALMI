@@ -1,8 +1,6 @@
 import com.google.inject.Guice;
 import com.google.inject.Injector;
-import exceptions.AlmiException;
 import guice.AlmiModules;
-import message.ErrorMessage;
 import message.MethodCallRequest;
 import socket.client.ClientSocketService;
 import socket.client.ClientSocketServiceFactory;

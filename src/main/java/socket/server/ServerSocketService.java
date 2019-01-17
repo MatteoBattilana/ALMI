@@ -5,32 +5,43 @@ import com.google.inject.assistedinject.Assisted;
 import utils.Constants;
 import utils.Service;
 
-public class ServerSocketService implements Service, Runnable
+public class ServerSocketService implements Service<ServerSocketService>, Runnable
 {
-    private final ServerSocket mServerSocket;
+    private final ServerSocketFactory mServerSocketFactory;
+
+    private ServerSocket mServerSocket;
+    private int          mPort = Constants.SOCKET_PORT;
 
     @Inject
     public ServerSocketService(
-      ServerSocketFactory serverSocketFactory,
-      @Assisted int port
+      ServerSocketFactory serverSocketFactory
     )
     {
-        mServerSocket = serverSocketFactory.create(port);
+        mServerSocketFactory = serverSocketFactory;
+    }
+
+    public ServerSocketService setPort(int port)
+    {
+        mPort = port;
+        return this;
     }
 
     @Override
-    public void start()
+    public ServerSocketService start()
     {
+        mServerSocket = mServerSocketFactory.create(mPort);
         new Thread(
           this,
           Constants.SOCKET_SERVICE_NAME
         ).start();
+        return this;
     }
 
     @Override
-    public void stop()
+    public ServerSocketService stop()
     {
         mServerSocket.close();
+        return this;
     }
 
     @Override

@@ -19,14 +19,18 @@ import java.util.List;
 
 public class ServerSocket implements Closeable
 {
+    private final SocketChannelInitializer mSocketChannelInitializer;
+
     private NioEventLoopGroup mGroup;
     private ServerBootstrap   mBootstrap;
 
     @Inject
     public ServerSocket(
+      SocketChannelInitializer socketChannelInitializer,
       @Assisted int port
     )
     {
+        mSocketChannelInitializer = socketChannelInitializer;
         init(port);
     }
 
@@ -37,7 +41,7 @@ public class ServerSocket implements Closeable
         mBootstrap.group(mGroup)
           .channel(NioServerSocketChannel.class)
           .localAddress(new InetSocketAddress(port))
-          .childHandler(new SocketChannelInitializer());
+          .childHandler(mSocketChannelInitializer);
     }
 
     @Override

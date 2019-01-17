@@ -1,43 +1,40 @@
 package socket.handler;
 
 import com.google.inject.Inject;
-import exceptions.AlmiException;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
 import message.BaseMessage;
+import message.ErrorMessage;
+import message.MessageInterpreter;
 import message.MethodCallRequest;
 import message.MethodCallResponse;
 import method.MethodsManager;
 
 @ChannelHandler.Sharable
-public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage>
+public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage> implements MessageInterpreter<Void>
 {
+    private final MethodsManager mMethodsManager;
+
+    @Inject
+    public MessageInboundHandler(
+      MethodsManager methodsManager
+    )
+    {
+        mMethodsManager = methodsManager;
+    }
+
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseMessage stupidClass) throws Exception
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseMessage in)
     {
         try
         {
-            System.out.println("Received " + stupidClass.getClass());
-            if(stupidClass instanceof MethodCallRequest)
-            {
-                MethodCallRequest call = (MethodCallRequest) stupidClass;
-
-                MethodsManager methodsManager = new MethodsManager();
-                Arithmetic arithmetic = new Arithmetic();
-                methodsManager.addMethod(arithmetic, Arithmetic.class.getMethod("sum", int.class, String.class), "sum");
-                Object result = methodsManager.execute(call.getMethodName(), call.getMethodParameters().toArray(new Object[0]));
-                channelHandlerContext.writeAndFlush(new MethodCallResponse("uuid", result));
-            }
-            else if(stupidClass instanceof MethodCallResponse)
-            {
-                System.out.println(((MethodCallResponse) stupidClass).getReturnValue());
-            }
+            in.interpret(this);
         }
         finally
         {
-            ReferenceCountUtil.release(stupidClass);
+            ReferenceCountUtil.release(in);
         }
     }
 
@@ -46,5 +43,26 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     {
         System.out.println("Closed connection!");
         ctx.fireChannelInactive();
+    }
+
+    @Override
+    public Void interpret(MethodCallResponse methodCallResponse)
+    {
+        System.out.println(methodCallResponse.getReturnValue());
+        return null;
+    }
+
+    @Override
+    public Void interpret(MethodCallRequest methodCallRequest)
+    {
+        System.out.println(methodCallRequest.getMethodName());
+        return null;
+    }
+
+    @Override
+    public Void interpret(ErrorMessage errorMessage)
+    {
+        System.out.println(errorMessage.getThrowable().getMessage());
+        return null;
     }
 }

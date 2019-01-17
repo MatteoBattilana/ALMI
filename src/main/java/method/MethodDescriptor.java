@@ -1,14 +1,15 @@
 package method;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 
 public class MethodDescriptor
 {
-    private final Object mInstance;
-    private final Method mMethod;
-    private final String mRemoteName;
+    private final Serializable mInstance;
+    private final Method       mMethod;
+    private final String       mRemoteName;
 
-    public MethodDescriptor(Object instance, Method method, String remoteName)
+    public MethodDescriptor(Serializable instance, Method method, String remoteName)
     {
         mInstance = instance;
         mMethod = method;
@@ -25,7 +26,7 @@ public class MethodDescriptor
         return mMethod;
     }
 
-    public Object getInstance()
+    public Serializable getInstance()
     {
         return mInstance;
     }

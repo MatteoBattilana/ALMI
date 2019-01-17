@@ -7,7 +7,9 @@ import message.Message;
 import utils.Constants;
 import utils.Service;
 
-public class ClientSocketService implements Service, Runnable
+import java.io.Serializable;
+
+public class ClientSocketService implements Service<ClientSocketService>, Runnable
 {
     private final ClientSocket mClientSocket;
 
@@ -21,24 +23,26 @@ public class ClientSocketService implements Service, Runnable
         mClientSocket = clientSocketFactory.create(host, port);
     }
 
-    public void writeMessage(Object message)
+    public void writeMessage(Serializable message)
     {
         mClientSocket.writeMessage(message);
     }
 
     @Override
-    public void start()
+    public ClientSocketService start()
     {
         new Thread(
           this,
           Constants.SOCKET_SERVICE_NAME
         ).start();
+        return this;
     }
 
     @Override
-    public void stop()
+    public ClientSocketService stop()
     {
         mClientSocket.close();
+        return this;
     }
 
     @Override

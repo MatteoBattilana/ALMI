@@ -21,4 +21,6 @@ public abstract class Message implements Serializable
     {
         return UUID.randomUUID().toString();
     }
+
+    public abstract <T> T interpret(MessageInterpreter<T> messageInterpreter);
 }

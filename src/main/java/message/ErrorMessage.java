@@ -19,4 +19,9 @@ public class ErrorMessage extends BaseMessage
     {
         return mThrowable;
     }
+
+    public <T> T interpret(MessageInterpreter<T> messageInterpreter)
+    {
+        return messageInterpreter.interpret(this);
+    }
 }

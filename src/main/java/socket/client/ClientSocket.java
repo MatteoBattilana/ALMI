@@ -14,6 +14,7 @@ import socket.handler.SocketChannelInitializer;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.InetSocketAddress;
 
 public class ClientSocket implements Closeable
@@ -59,7 +60,7 @@ public class ClientSocket implements Closeable
         mGroup.shutdownGracefully().syncUninterruptibly();
     }
 
-    public void writeMessage(Object message)
+    public void writeMessage(Serializable message)
     {
         mChannelFuture.channel().writeAndFlush(message);
     }

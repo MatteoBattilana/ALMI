@@ -1,17 +1,24 @@
 package message;
 
-public class MethodCallResponse extends BaseMessage
-{
-    private final Object mReturnValue;
+import java.io.Serializable;
 
-    public MethodCallResponse(String requestId, Object returnValue)
+public class MethodCallResponse<T extends Serializable> extends BaseMessage
+{
+    private final T mReturnValue;
+
+    public MethodCallResponse(String requestId, T returnValue)
     {
         super(requestId);
         mReturnValue = returnValue;
     }
 
-    public Object getReturnValue()
+    public T getReturnValue()
     {
         return mReturnValue;
+    }
+
+    public <K> K interpret(MessageInterpreter<K> messageInterpreter)
+    {
+        return messageInterpreter.interpret(this);
     }
 }

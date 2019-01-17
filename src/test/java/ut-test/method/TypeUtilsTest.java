@@ -5,6 +5,8 @@ import org.junit.Test;
 import testUtils.Person;
 import utils.TypeUtils;
 
+import java.io.Serializable;
+
 public class TypeUtilsTest {
 
     @Test
@@ -14,7 +16,7 @@ public class TypeUtilsTest {
         person.addChild(new Person("Luca", 7));
         person.addChild(new Person("Maria", 10));
         String serialized = TypeUtils.toString(person);
-        Object o = TypeUtils.fromString(serialized);
+        Serializable o = TypeUtils.fromString(serialized);
 
         Assert.assertTrue(o instanceof Person);
         Assert.assertEquals(o, person);
