@@ -1,6 +1,7 @@
 package socket.handler;
 
 import com.google.inject.Inject;
+import exceptions.AlmiException;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -11,6 +12,8 @@ import message.MessageInterpreter;
 import message.MethodCallRequest;
 import message.MethodCallResponse;
 import method.MethodsManager;
+
+import java.io.Serializable;
 
 @ChannelHandler.Sharable
 public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage> implements MessageInterpreter<Void>
@@ -26,11 +29,12 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext channelHandlerContext, BaseMessage in)
+    protected void channelRead0(ChannelHandlerContext ctx, BaseMessage in)
+      throws AlmiException
     {
         try
         {
-            in.interpret(this);
+            in.interpret(this, ctx);
         }
         finally
         {
@@ -46,21 +50,26 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     }
 
     @Override
-    public Void interpret(MethodCallResponse methodCallResponse)
+    public Void interpret(MethodCallResponse methodCallResponse, ChannelHandlerContext ctx)
     {
         System.out.println(methodCallResponse.getReturnValue());
         return null;
     }
 
     @Override
-    public Void interpret(MethodCallRequest methodCallRequest)
+    public Void interpret(MethodCallRequest methodCallRequest, ChannelHandlerContext ctx) throws AlmiException
     {
-        System.out.println(methodCallRequest.getMethodName());
+        Serializable results = mMethodsManager.execute(
+          methodCallRequest.getMethodName(),
+          methodCallRequest.getMethodParameters()
+        );
+        ctx.writeAndFlush(results);
+        
         return null;
     }
 
     @Override
-    public Void interpret(ErrorMessage errorMessage)
+    public Void interpret(ErrorMessage errorMessage, ChannelHandlerContext ctx)
     {
         System.out.println(errorMessage.getThrowable().getMessage());
         return null;

@@ -5,11 +5,11 @@ import java.lang.reflect.Method;
 
 public class MethodDescriptor
 {
-    private final Serializable mInstance;
-    private final Method       mMethod;
-    private final String       mRemoteName;
+    private final Object mInstance;
+    private final Method mMethod;
+    private final String mRemoteName;
 
-    public MethodDescriptor(Serializable instance, Method method, String remoteName)
+    public MethodDescriptor(Object instance, Method method, String remoteName)
     {
         mInstance = instance;
         mMethod = method;
@@ -26,7 +26,7 @@ public class MethodDescriptor
         return mMethod;
     }
 
-    public Serializable getInstance()
+    public Object getInstance()
     {
         return mInstance;
     }

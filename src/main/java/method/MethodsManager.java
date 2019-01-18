@@ -23,7 +23,7 @@ public class MethodsManager
         mMethodsMap = new HashMap<>();
     }
 
-    public void addMethod(Serializable instance, Method method, String remoteName)
+    public void addMethod(Object instance, Method method, String remoteName)
       throws MethodAlreadyExistsException
     {
         addMethod(new MethodDescriptor(instance, method, remoteName));

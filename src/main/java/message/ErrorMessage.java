@@ -1,5 +1,7 @@
 package message;
 
+import io.netty.channel.ChannelHandlerContext;
+
 public class ErrorMessage extends BaseMessage
 {
     private final Throwable mThrowable;
@@ -20,8 +22,8 @@ public class ErrorMessage extends BaseMessage
         return mThrowable;
     }
 
-    public <T> T interpret(MessageInterpreter<T> messageInterpreter)
+    public <T> T interpret(MessageInterpreter<T> messageInterpreter, ChannelHandlerContext ctx)
     {
-        return messageInterpreter.interpret(this);
+        return messageInterpreter.interpret(this, ctx);
     }
 }

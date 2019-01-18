@@ -1,5 +1,8 @@
 package message;
 
+import exceptions.AlmiException;
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -25,8 +28,9 @@ public class MethodCallRequest extends BaseMessage
         return mMethodParameters;
     }
 
-    public <T> T interpret(MessageInterpreter<T> messageInterpreter)
+    public <T> T interpret(MessageInterpreter<T> messageInterpreter, ChannelHandlerContext ctx)
+      throws AlmiException
     {
-        return messageInterpreter.interpret(this);
+        return messageInterpreter.interpret(this, ctx);
     }
 }

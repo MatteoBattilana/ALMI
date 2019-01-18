@@ -1,5 +1,7 @@
 package message;
 
+import io.netty.channel.ChannelHandlerContext;
+
 import java.io.Serializable;
 
 public class MethodCallResponse<T extends Serializable> extends BaseMessage
@@ -17,8 +19,8 @@ public class MethodCallResponse<T extends Serializable> extends BaseMessage
         return mReturnValue;
     }
 
-    public <K> K interpret(MessageInterpreter<K> messageInterpreter)
+    public <K> K interpret(MessageInterpreter<K> messageInterpreter, ChannelHandlerContext ctx)
     {
-        return messageInterpreter.interpret(this);
+        return messageInterpreter.interpret(this, ctx);
     }
 }
