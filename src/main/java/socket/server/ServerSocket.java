@@ -8,41 +8,31 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import socket.handler.SocketChannelInitializer;
-import utils.Constants;
 
-import java.io.Closeable;
 import java.net.InetSocketAddress;
 
-public class ServerSocket implements Closeable
+public class ServerSocket
 {
-    private final SocketChannelInitializer mSocketChannelInitializer;
-
     private NioEventLoopGroup mGroup;
     private ServerBootstrap   mBootstrap;
 
     @Inject
     public ServerSocket(
       SocketChannelInitializer socketChannelInitializer,
-      @Assisted
-        int port
+      @Assisted String address,
+      @Assisted("port") int port,
+      @Assisted("connectionTimeout") int connectionTimeout
     )
-    {
-        mSocketChannelInitializer = socketChannelInitializer;
-        init(port);
-    }
-
-    private void init(int port)
     {
         mGroup = new NioEventLoopGroup();
         mBootstrap = new ServerBootstrap();
         mBootstrap.group(mGroup)
-          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Constants.SOCKET_TIMEOUT)
+          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
           .channel(NioServerSocketChannel.class)
-          .localAddress(new InetSocketAddress(port))
-          .childHandler(mSocketChannelInitializer);
+          .localAddress(new InetSocketAddress(address, port))
+          .childHandler(socketChannelInitializer);
     }
 
-    @Override
     public void close()
     {
         mGroup.shutdownGracefully().syncUninterruptibly();
@@ -53,7 +43,7 @@ public class ServerSocket implements Closeable
       throws InterruptedException
     {
         ChannelFuture future = mBootstrap.bind().sync();
-        System.out.println("Started listening on" + future.channel().localAddress().toString());
+        System.out.println("Started listening on" + future.channel().localAddress());
         future.channel().closeFuture().sync();
     }
 }

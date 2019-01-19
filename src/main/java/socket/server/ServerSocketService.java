@@ -2,46 +2,32 @@ package socket.server;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import exceptions.MethodAlreadyExistsException;
-import exceptions.UnsupportedReturnTypeException;
-import method.MethodsManager;
-import utils.Constants;
 import utils.Service;
-
-import java.io.Serializable;
-import java.lang.reflect.Method;
 
 public class ServerSocketService implements Service<ServerSocketService>, Runnable
 {
-    private final ServerSocketFactory mServerSocketFactory;
-    private final MethodsManager      mMethodsManager;
-
-    private ServerSocket mServerSocket;
-    private int          mPort = Constants.SOCKET_PORT;
+    private final String       mThreadName;
+    private final ServerSocket mServerSocket;
 
     @Inject
     public ServerSocketService(
       ServerSocketFactory serverSocketFactory,
-      MethodsManager methodsManager
-    )
+      @Assisted("socketAddress") String socketAddress,
+      @Assisted("port") int port,
+      @Assisted("connectTimeout") int connectTimeout,
+      @Assisted("threadName") String threadName
+      )
     {
-        mServerSocketFactory = serverSocketFactory;
-        mMethodsManager = methodsManager;
-    }
-
-    public ServerSocketService setPort(int port)
-    {
-        mPort = port;
-        return this;
+        mThreadName = threadName;
+        mServerSocket = serverSocketFactory.create(socketAddress, port, connectTimeout);
     }
 
     @Override
     public ServerSocketService start()
     {
-        mServerSocket = mServerSocketFactory.create(mPort);
         new Thread(
           this,
-          Constants.SOCKET_SERVICE_NAME
+          mThreadName
         ).start();
         return this;
     }
@@ -64,12 +50,5 @@ public class ServerSocketService implements Service<ServerSocketService>, Runnab
         {
             e.printStackTrace();
         }
-    }
-
-    public ServerSocketService addMethod(Object instance, Method method, String remoteName)
-      throws MethodAlreadyExistsException, UnsupportedReturnTypeException
-    {
-        mMethodsManager.addMethod(instance, method, remoteName);
-        return this;
     }
 }

@@ -44,7 +44,7 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     }
 
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, BaseMessage in)
+    protected void channelRead0(ChannelHandlerContext ctx, BaseMessage in)
       throws AlmiException
     {
         try

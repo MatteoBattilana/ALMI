@@ -1,30 +1,28 @@
 package socket.client;
 
 import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import io.netty.util.concurrent.Promise;
 import message.BaseMessage;
 import utils.Constants;
 import utils.Service;
 
 import java.io.Serializable;
-import java.util.concurrent.Future;
 
 public class ClientSocketService implements Service<ClientSocketService>, Runnable
 {
-    private final ClientSocket mClientSocket;
+    private final ConnectionPoolManager mConnectionPoolManager;
 
     @Inject
     public ClientSocketService(
       ClientSocketFactory clientSocketFactory
     )
     {
-        mClientSocket = clientSocketFactory.create("localhost", Constants.SOCKET_PORT);
+        mConnectionPoolManager = clientSocketFactory.create("localhost", Constants.SOCKET_PORT);
     }
 
     public Promise<Serializable> writeMessage(BaseMessage message)
     {
-        return mClientSocket.writeMessage(message);
+        return mConnectionPoolManager.writeMessage(message);
     }
 
     @Override
@@ -32,7 +30,7 @@ public class ClientSocketService implements Service<ClientSocketService>, Runnab
     {
         new Thread(
           this,
-          Constants.SOCKET_SERVICE_NAME
+          Constants.SOCKET_SERVICE_THREAD_NAME
         ).start();
         return this;
     }
@@ -40,7 +38,7 @@ public class ClientSocketService implements Service<ClientSocketService>, Runnab
     @Override
     public ClientSocketService stop()
     {
-        mClientSocket.close();
+        mConnectionPoolManager.close();
         return this;
     }
 
@@ -49,7 +47,7 @@ public class ClientSocketService implements Service<ClientSocketService>, Runnab
     {
         try
         {
-            mClientSocket.connect();
+            mConnectionPoolManager.connect();
         }
         catch(InterruptedException e)
         {

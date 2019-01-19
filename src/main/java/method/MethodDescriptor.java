@@ -2,7 +2,6 @@ package method;
 
 import exceptions.UnsupportedReturnTypeException;
 
-import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
@@ -20,13 +19,12 @@ public class MethodDescriptor
         mInstance = instance;
         mMethod = method;
         mRemoteName = remoteName;
-
     }
 
     private void assertSerializable(Class<?> returnType)
       throws UnsupportedReturnTypeException
     {
-        if(!Serializable.class.isAssignableFrom(returnType))
+        if(!returnType.isPrimitive() && !Serializable.class.isAssignableFrom(returnType))
         {
             throw new UnsupportedReturnTypeException(returnType);
         }
