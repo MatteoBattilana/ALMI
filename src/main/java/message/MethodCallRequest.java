@@ -18,6 +18,11 @@ public class MethodCallRequest extends BaseMessage
         this.mMethodParameters = params;
     }
 
+    public MethodCallRequest(String methodName, List<Serializable> params)
+    {
+        this(BaseMessage.randomId(), methodName, params);
+    }
+
     public String getMethodName()
     {
         return mMethodName;

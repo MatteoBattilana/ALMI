@@ -2,12 +2,13 @@ package socket.client;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import io.netty.util.concurrent.Promise;
 import message.BaseMessage;
-import message.Message;
 import utils.Constants;
 import utils.Service;
 
 import java.io.Serializable;
+import java.util.concurrent.Future;
 
 public class ClientSocketService implements Service<ClientSocketService>, Runnable
 {
@@ -15,17 +16,15 @@ public class ClientSocketService implements Service<ClientSocketService>, Runnab
 
     @Inject
     public ClientSocketService(
-      ClientSocketFactory clientSocketFactory,
-      @Assisted String host,
-      @Assisted int port
+      ClientSocketFactory clientSocketFactory
     )
     {
-        mClientSocket = clientSocketFactory.create(host, port);
+        mClientSocket = clientSocketFactory.create("localhost", Constants.SOCKET_PORT);
     }
 
-    public void writeMessage(Serializable message)
+    public Promise<Serializable> writeMessage(BaseMessage message)
     {
-        mClientSocket.writeMessage(message);
+        return mClientSocket.writeMessage(message);
     }
 
     @Override

@@ -2,11 +2,6 @@ package exceptions;
 
 public class WrongParametersException extends AlmiException
 {
-    public WrongParametersException(int expected, int received, Throwable throwable)
-    {
-        super(getErrorMessage(expected, received), throwable);
-    }
-
     public WrongParametersException(int expected, int received)
     {
         super(getErrorMessage(expected, received));

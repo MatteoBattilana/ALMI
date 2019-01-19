@@ -3,5 +3,6 @@ package utils;
 public class Constants
 {
     public static final int    SOCKET_PORT         = 11111;
+    public static final int    SOCKET_TIMEOUT      = 10000;
     public static final String SOCKET_SERVICE_NAME = "socket-service";
 }

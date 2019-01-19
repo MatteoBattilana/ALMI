@@ -3,8 +3,8 @@ package socket.server;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import socket.handler.SocketChannelInitializer;
@@ -12,10 +12,6 @@ import utils.Constants;
 
 import java.io.Closeable;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
 public class ServerSocket implements Closeable
 {
@@ -27,7 +23,8 @@ public class ServerSocket implements Closeable
     @Inject
     public ServerSocket(
       SocketChannelInitializer socketChannelInitializer,
-      @Assisted int port
+      @Assisted
+        int port
     )
     {
         mSocketChannelInitializer = socketChannelInitializer;
@@ -39,6 +36,7 @@ public class ServerSocket implements Closeable
         mGroup = new NioEventLoopGroup();
         mBootstrap = new ServerBootstrap();
         mBootstrap.group(mGroup)
+          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, Constants.SOCKET_TIMEOUT)
           .channel(NioServerSocketChannel.class)
           .localAddress(new InetSocketAddress(port))
           .childHandler(mSocketChannelInitializer);

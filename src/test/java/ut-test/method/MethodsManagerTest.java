@@ -2,6 +2,7 @@ package method;
 
 import exceptions.MethodAlreadyExistsException;
 import exceptions.MissingMethodException;
+import exceptions.UnsupportedReturnTypeException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,12 @@ public class MethodsManagerTest {
     public void missingMethod() throws Exception
     {
         mMethodsManager.execute("toString", Collections.emptyList());
+    }
+
+    @Test (expected = UnsupportedReturnTypeException.class)
+    public void unsupportedReturnType() throws Exception
+    {
+        mMethodsManager.addMethod(new Arithmetic(), Arithmetic.class.getMethod("notValid"), "notValid");
     }
 
     @Test

@@ -15,7 +15,7 @@ public abstract class Message implements Serializable
         mId = id;
     }
 
-    protected String getId()
+    public String getId()
     {
         return mId;
     }

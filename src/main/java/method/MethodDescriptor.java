@@ -1,5 +1,8 @@
 package method;
 
+import exceptions.UnsupportedReturnTypeException;
+
+import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.reflect.Method;
 
@@ -10,10 +13,23 @@ public class MethodDescriptor
     private final String mRemoteName;
 
     public MethodDescriptor(Object instance, Method method, String remoteName)
+      throws UnsupportedReturnTypeException
     {
+        assertSerializable(method.getReturnType());
+
         mInstance = instance;
         mMethod = method;
         mRemoteName = remoteName;
+
+    }
+
+    private void assertSerializable(Class<?> returnType)
+      throws UnsupportedReturnTypeException
+    {
+        if(!Serializable.class.isAssignableFrom(returnType))
+        {
+            throw new UnsupportedReturnTypeException(returnType);
+        }
     }
 
     public String getRemoteName()
@@ -55,6 +71,6 @@ public class MethodDescriptor
     @Override
     public String toString()
     {
-        return String.format("[%s() with remote name : %s]", mMethod.getName(), mRemoteName);
+        return String.format("[%s.%s() with remote name : %s]", mInstance.getClass(), mMethod.getName(), mRemoteName);
     }
 }

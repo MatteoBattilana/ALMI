@@ -1,28 +1,38 @@
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import guice.AlmiModules;
+import io.netty.util.concurrent.Promise;
 import message.MethodCallRequest;
 import socket.client.ClientSocketService;
-import socket.client.ClientSocketServiceFactory;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.Future;
 
-public class ClientMain {
-    public static void main(String [] args) throws Exception
+public class ClientMain
+{
+    public static void main(String[] args)
+      throws Exception
     {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         Injector injector = Guice.createInjector(new AlmiModules());
 
-        ClientSocketServiceFactory clientSocketServiceFactory = injector.getInstance(ClientSocketServiceFactory.class);
-        ClientSocketService localhost = clientSocketServiceFactory.create("localhost", 11111);
-        localhost.start();
+        ClientSocketService clientSocketService = injector.getInstance(ClientSocketService.class);
+
+        clientSocketService.start();
 
         while(true)
         {
-            br.readLine();
-            localhost.writeMessage(new MethodCallRequest("uuid", "sum", Arrays.asList(1000,"111111111111111111111111")));
+            Promise<Serializable> future = clientSocketService.writeMessage(new MethodCallRequest(
+              "test",
+              Collections
+                .singletonList(br.readLine())
+            ));
+            System.out.println("idDone : " + future.syncUninterruptibly().isSuccess());
+            System.out.println("Value : " + future.get().toString());
         }
     }
 }

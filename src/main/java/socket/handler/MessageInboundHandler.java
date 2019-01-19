@@ -6,6 +6,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
+import io.netty.util.concurrent.Promise;
 import message.BaseMessage;
 import message.ErrorMessage;
 import message.MessageInterpreter;
@@ -14,11 +15,16 @@ import message.MethodCallResponse;
 import method.MethodsManager;
 
 import java.io.Serializable;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 @ChannelHandler.Sharable
 public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage> implements MessageInterpreter<Void>
 {
-    private final MethodsManager mMethodsManager;
+    private final MethodsManager                       mMethodsManager;
+    private final BlockingQueue<Promise<Serializable>> mPromisesQueue;
+
+    private ChannelHandlerContext mCtx;
 
     @Inject
     public MessageInboundHandler(
@@ -26,10 +32,19 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     )
     {
         mMethodsManager = methodsManager;
+        mPromisesQueue = new LinkedBlockingDeque<>();
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, BaseMessage in)
+    public void channelActive(ChannelHandlerContext ctx)
+      throws Exception
+    {
+        super.channelActive(ctx);
+        mCtx = ctx;
+    }
+
+    @Override
+    protected void messageReceived(ChannelHandlerContext ctx, BaseMessage in)
       throws AlmiException
     {
         try
@@ -53,18 +68,20 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     public Void interpret(MethodCallResponse methodCallResponse, ChannelHandlerContext ctx)
     {
         System.out.println(methodCallResponse.getReturnValue());
+        mPromisesQueue.poll().setSuccess(methodCallResponse.getReturnValue());
         return null;
     }
 
     @Override
-    public Void interpret(MethodCallRequest methodCallRequest, ChannelHandlerContext ctx) throws AlmiException
+    public Void interpret(MethodCallRequest methodCallRequest, ChannelHandlerContext ctx)
+      throws AlmiException
     {
         Serializable results = mMethodsManager.execute(
           methodCallRequest.getMethodName(),
           methodCallRequest.getMethodParameters()
         );
-        ctx.writeAndFlush(results);
-        
+        ctx.writeAndFlush(new MethodCallResponse<>(methodCallRequest.getId(), results));
+
         return null;
     }
 
@@ -72,6 +89,16 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     public Void interpret(ErrorMessage errorMessage, ChannelHandlerContext ctx)
     {
         System.out.println(errorMessage.getThrowable().getMessage());
+        mPromisesQueue.poll().setFailure(errorMessage.getThrowable());
         return null;
+    }
+
+    public Promise<Serializable> sendMessage(BaseMessage message)
+    {
+        Promise<Serializable> promise = mCtx.channel().eventLoop().newPromise();
+        mPromisesQueue.offer(promise);
+        mCtx.writeAndFlush(message);
+
+        return promise;
     }
 }

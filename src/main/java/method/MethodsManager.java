@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import exceptions.AlmiException;
 import exceptions.MethodAlreadyExistsException;
 import exceptions.MissingMethodException;
+import exceptions.UnsupportedReturnTypeException;
 import exceptions.WrongParametersException;
 
 import java.io.Serializable;
@@ -24,7 +25,7 @@ public class MethodsManager
     }
 
     public void addMethod(Object instance, Method method, String remoteName)
-      throws MethodAlreadyExistsException
+      throws MethodAlreadyExistsException, UnsupportedReturnTypeException
     {
         addMethod(new MethodDescriptor(instance, method, remoteName));
     }
@@ -39,7 +40,7 @@ public class MethodsManager
             {
                 try
                 {
-                    return (Serializable) method.getMethod().invoke(method.getInstance(), params.toArray(new Serializable[0]));
+                    return (Serializable) method.getMethod().invoke(method.getInstance(), params.toArray(new Object[0]));
                 }
                 catch(IllegalAccessException | InvocationTargetException e)
                 {

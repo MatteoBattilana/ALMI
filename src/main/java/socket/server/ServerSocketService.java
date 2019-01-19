@@ -3,6 +3,7 @@ package socket.server;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import exceptions.MethodAlreadyExistsException;
+import exceptions.UnsupportedReturnTypeException;
 import method.MethodsManager;
 import utils.Constants;
 import utils.Service;
@@ -66,7 +67,7 @@ public class ServerSocketService implements Service<ServerSocketService>, Runnab
     }
 
     public ServerSocketService addMethod(Object instance, Method method, String remoteName)
-      throws MethodAlreadyExistsException
+      throws MethodAlreadyExistsException, UnsupportedReturnTypeException
     {
         mMethodsManager.addMethod(instance, method, remoteName);
         return this;
