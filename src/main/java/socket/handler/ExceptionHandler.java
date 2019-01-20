@@ -9,8 +9,6 @@ public class ExceptionHandler extends ChannelHandlerAdapter
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause)
     {
-        cause.printStackTrace();
-        // TODO: manage the message id
         ctx.writeAndFlush(new ErrorMessage(cause));
     }
 }

@@ -25,7 +25,6 @@ public class ServerMain
           .start();
 
         server.addMethod(new ServerMain(), ServerMain.class.getMethod("test", String.class), "test");
-
         Thread.yield();
     }
 

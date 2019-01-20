@@ -2,15 +2,13 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import guice.AlmiModules;
 import io.netty.util.concurrent.Promise;
-import message.MethodCallRequest;
-import socket.client.ClientSocketService;
+import socket.Almi;
+import socket.bootstrap.DefaultAlmiBootstrap;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.concurrent.Future;
 
 public class ClientMain
 {
@@ -20,19 +18,23 @@ public class ClientMain
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         Injector injector = Guice.createInjector(new AlmiModules());
 
-        ClientSocketService clientSocketService = injector.getInstance(ClientSocketService.class);
+        DefaultAlmiBootstrap bootstrap = injector.getInstance(DefaultAlmiBootstrap.class);
 
-        clientSocketService.start();
+        Almi server = bootstrap.withConnectionTimeout(1000)
+          .withAddress("localhost")
+          .withPort(8889)
+          .withThreadName("netty-client")
+          .start();
 
         while(true)
         {
-            Promise<Serializable> future = clientSocketService.writeMessage(new MethodCallRequest(
+            Serializable value = server.callMethod(
+              "localhost",
+              8888,
               "test",
-              Collections
-                .singletonList(br.readLine())
-            ));
-            System.out.println("idDone : " + future.syncUninterruptibly().isSuccess());
-            System.out.println("Value : " + future.get().toString());
+              Collections.singletonList(br.readLine())
+            );
+            System.out.println("Value : " + value);
         }
     }
 }

@@ -13,43 +13,45 @@ import message.MessageInterpreter;
 import message.MethodCallRequest;
 import message.MethodCallResponse;
 import method.MethodsManager;
+import socket.client.PromisesManager;
 
 import java.io.Serializable;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingDeque;
 
 @ChannelHandler.Sharable
 public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage> implements MessageInterpreter<Void>
 {
-    private final MethodsManager                       mMethodsManager;
-    private final BlockingQueue<Promise<Serializable>> mPromisesQueue;
-
-    private ChannelHandlerContext mCtx;
+    private final MethodsManager  mMethodsManager;
+    private final PromisesManager mPromisesManager;
 
     @Inject
     public MessageInboundHandler(
-      MethodsManager methodsManager
+      MethodsManager methodsManager,
+      PromisesManager promisesManager
     )
     {
         mMethodsManager = methodsManager;
-        mPromisesQueue = new LinkedBlockingDeque<>();
+        mPromisesManager = promisesManager;
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx)
       throws Exception
     {
+        System.out.println("Connected!");
         super.channelActive(ctx);
-        mCtx = ctx;
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, BaseMessage in)
-      throws AlmiException
     {
         try
         {
+            System.out.println("Received: " + in.getClass());
             in.interpret(this, ctx);
+        }
+        catch(Exception e)
+        {
+            ctx.writeAndFlush(new ErrorMessage(in.getId(), e));
         }
         finally
         {
@@ -67,8 +69,12 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     @Override
     public Void interpret(MethodCallResponse methodCallResponse, ChannelHandlerContext ctx)
     {
-        System.out.println(methodCallResponse.getReturnValue());
-        mPromisesQueue.poll().setSuccess(methodCallResponse.getReturnValue());
+        Promise<Serializable> returnPromise = mPromisesManager.get(methodCallResponse.getId());
+        if(returnPromise != null)
+        {
+            returnPromise.setSuccess(methodCallResponse.getReturnValue());
+        }
+
         return null;
     }
 
@@ -88,17 +94,12 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     @Override
     public Void interpret(ErrorMessage errorMessage, ChannelHandlerContext ctx)
     {
-        System.out.println(errorMessage.getThrowable().getMessage());
-        mPromisesQueue.poll().setFailure(errorMessage.getThrowable());
+        Promise<Serializable> returnValue = mPromisesManager.get(errorMessage.getId());
+        if(returnValue != null)
+        {
+            returnValue.setFailure(errorMessage.getThrowable());
+        }
+
         return null;
-    }
-
-    public Promise<Serializable> sendMessage(BaseMessage message)
-    {
-        Promise<Serializable> promise = mCtx.channel().eventLoop().newPromise();
-        mPromisesQueue.offer(promise);
-        mCtx.writeAndFlush(message);
-
-        return promise;
     }
 }
