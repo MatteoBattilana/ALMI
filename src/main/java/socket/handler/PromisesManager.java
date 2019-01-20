@@ -1,4 +1,4 @@
-package socket.client;
+package socket.handler;
 
 import com.google.inject.Singleton;
 import io.netty.util.concurrent.Promise;
@@ -14,11 +14,16 @@ public class PromisesManager
 
     public Promise<Serializable> get(String key)
     {
-        return mReturnValuePromises.get(key);
+        return mReturnValuePromises.remove(key);
     }
 
     public Promise<Serializable> put(String key, Promise<Serializable> promise)
     {
         return mReturnValuePromises.put(key, promise);
+    }
+
+    public void cancelPromise(String key)
+    {
+        mReturnValuePromises.remove(key);
     }
 }

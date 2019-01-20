@@ -15,7 +15,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
 import io.netty.util.concurrent.Promise;
 import message.MethodCallRequest;
-import socket.handler.MessageInboundHandler;
+import socket.handler.PromisesManager;
 
 import java.io.Serializable;
 import java.net.InetSocketAddress;

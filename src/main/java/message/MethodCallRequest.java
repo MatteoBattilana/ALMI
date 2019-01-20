@@ -34,7 +34,7 @@ public class MethodCallRequest extends BaseMessage
     }
 
     public <T> T interpret(MessageInterpreter<T> messageInterpreter, ChannelHandlerContext ctx)
-      throws AlmiException
+      throws Exception
     {
         return messageInterpreter.interpret(this, ctx);
     }

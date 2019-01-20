@@ -1,7 +1,10 @@
 package socket.bootstrap;
 
+import exceptions.AlmiException;
+import exceptions.InvalidPropertiesFileException;
 import socket.Almi;
 
+import java.io.File;
 import java.util.Properties;
 
 public interface AlmiBootstrap
@@ -27,9 +30,28 @@ public interface AlmiBootstrap
     AlmiBootstrap withConnectionTimeout(int timeout);
 
     /**
+     * @param timeout
+     */
+    AlmiBootstrap withPromiseTimeout(int timeout);
+
+    /**
      * @param props
      */
-    AlmiBootstrap from(Properties props);
+    AlmiBootstrap from(Properties props)
+      throws AlmiException;
 
-    Almi start();
+    /**
+     * @param path
+     */
+    AlmiBootstrap fromPropertiesFile(String path)
+      throws AlmiException;
+
+    /**
+     * @param mapper
+     */
+    AlmiBootstrap withMethodsMapper(MethodsMapper mapper)
+      throws AlmiException;
+
+    Almi start()
+      throws AlmiException;
 }

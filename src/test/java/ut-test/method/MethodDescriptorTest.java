@@ -6,7 +6,6 @@ import testUtils.Arithmetic;
 
 public class MethodDescriptorTest
 {
-
     @Test
     public void testEquals() throws Exception
     {

@@ -29,5 +29,5 @@ public abstract class Message implements Serializable
       MessageInterpreter<T> messageInterpreter,
       ChannelHandlerContext ctx
     )
-      throws AlmiException;
+      throws Exception;
 }

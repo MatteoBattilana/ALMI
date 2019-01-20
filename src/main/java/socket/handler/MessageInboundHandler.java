@@ -13,7 +13,6 @@ import message.MessageInterpreter;
 import message.MethodCallRequest;
 import message.MethodCallResponse;
 import method.MethodsManager;
-import socket.client.PromisesManager;
 
 import java.io.Serializable;
 
@@ -80,7 +79,7 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
 
     @Override
     public Void interpret(MethodCallRequest methodCallRequest, ChannelHandlerContext ctx)
-      throws AlmiException
+      throws Exception
     {
         Serializable results = mMethodsManager.execute(
           methodCallRequest.getMethodName(),
