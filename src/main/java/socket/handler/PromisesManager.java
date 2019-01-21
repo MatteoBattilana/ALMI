@@ -2,28 +2,29 @@ package socket.handler;
 
 import com.google.inject.Singleton;
 import io.netty.util.concurrent.Promise;
+import message.MethodCallResponse;
 
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Singleton
 public class PromisesManager
 {
-    private final Map<String, Promise<Serializable>> mReturnValuePromises = new ConcurrentHashMap<>();
+    private final Map<String, Promise<MethodCallResponse>> mReturnValuePromises = new ConcurrentHashMap<>();
 
-    public Promise<Serializable> get(String key)
+    public Promise<MethodCallResponse> get(String key)
     {
-        return mReturnValuePromises.remove(key);
+        return mReturnValuePromises.get(key);
     }
 
-    public Promise<Serializable> put(String key, Promise<Serializable> promise)
+    public Promise<MethodCallResponse> put(String key, Promise<MethodCallResponse> promise)
     {
         return mReturnValuePromises.put(key, promise);
     }
 
     public void cancelPromise(String key)
     {
+        // get(key).cancel(true);
         mReturnValuePromises.remove(key);
     }
 }

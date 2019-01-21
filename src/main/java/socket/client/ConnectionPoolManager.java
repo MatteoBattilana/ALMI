@@ -5,7 +5,6 @@ import com.google.inject.assistedinject.Assisted;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
-import io.netty.channel.DefaultEventLoop;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.pool.AbstractChannelPoolMap;
 import io.netty.channel.pool.ChannelPoolMap;
@@ -13,11 +12,12 @@ import io.netty.channel.pool.SimpleChannelPool;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.FutureListener;
+import io.netty.util.concurrent.GlobalEventExecutor;
 import io.netty.util.concurrent.Promise;
 import message.MethodCallRequest;
+import message.MethodCallResponse;
 import socket.handler.PromisesManager;
 
-import java.io.Serializable;
 import java.net.InetSocketAddress;
 
 public class ConnectionPoolManager
@@ -27,6 +27,7 @@ public class ConnectionPoolManager
 
     private ChannelPoolMap<InetSocketAddress, SimpleChannelPool> mConnectionPool;
     private Bootstrap                                            mBootstrap;
+    private NioEventLoopGroup                                    mGroup;
 
     @Inject
     public ConnectionPoolManager(
@@ -42,9 +43,9 @@ public class ConnectionPoolManager
 
     private void init(int connectionTimeout)
     {
-        NioEventLoopGroup group = new NioEventLoopGroup();
+        mGroup = new NioEventLoopGroup();
         mBootstrap = new Bootstrap();
-        mBootstrap.group(group)
+        mBootstrap.group(mGroup)
           .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
           .channel(NioSocketChannel.class);
 
@@ -58,9 +59,15 @@ public class ConnectionPoolManager
         };
     }
 
-    public Promise<Serializable> callMethod(InetSocketAddress address, MethodCallRequest request)
+    public void close()
     {
-        Promise<Serializable> promise = new DefaultEventLoop().newPromise();
+        mGroup.shutdownGracefully().syncUninterruptibly();
+    }
+
+    public Promise<MethodCallResponse> callMethod(InetSocketAddress address, MethodCallRequest request)
+    {
+        Promise<MethodCallResponse> promise = GlobalEventExecutor.INSTANCE.newPromise();
+        mPromisesManager.put(request.getId(), promise);
         final SimpleChannelPool pool = mConnectionPool.get(address);
         Future<Channel> future = pool.acquire();
         future.addListener((FutureListener<Channel>) f ->

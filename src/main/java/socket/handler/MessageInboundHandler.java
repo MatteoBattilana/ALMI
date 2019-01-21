@@ -1,7 +1,6 @@
 package socket.handler;
 
 import com.google.inject.Inject;
-import exceptions.AlmiException;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -15,6 +14,7 @@ import message.MethodCallResponse;
 import method.MethodsManager;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 @ChannelHandler.Sharable
 public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage> implements MessageInterpreter<Void>
@@ -68,10 +68,10 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     @Override
     public Void interpret(MethodCallResponse methodCallResponse, ChannelHandlerContext ctx)
     {
-        Promise<Serializable> returnPromise = mPromisesManager.get(methodCallResponse.getId());
+        Promise<MethodCallResponse> returnPromise = mPromisesManager.get(methodCallResponse.getId());
         if(returnPromise != null)
         {
-            returnPromise.setSuccess(methodCallResponse.getReturnValue());
+            returnPromise.setSuccess(methodCallResponse);
         }
 
         return null;
@@ -81,11 +81,18 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     public Void interpret(MethodCallRequest methodCallRequest, ChannelHandlerContext ctx)
       throws Exception
     {
-        Serializable results = mMethodsManager.execute(
-          methodCallRequest.getMethodName(),
-          methodCallRequest.getMethodParameters()
-        );
-        ctx.writeAndFlush(new MethodCallResponse<>(methodCallRequest.getId(), results));
+        try
+        {
+            Serializable results = mMethodsManager.execute(
+              methodCallRequest.getMethodName(),
+              methodCallRequest.getMethodParameters()
+            );
+            ctx.writeAndFlush(new MethodCallResponse<>(methodCallRequest.getId(), results));
+        }
+        catch(InvocationTargetException e)
+        {
+            ctx.writeAndFlush(new MethodCallResponse<>(methodCallRequest.getId(), e.getCause()));
+        }
 
         return null;
     }
@@ -93,7 +100,7 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     @Override
     public Void interpret(ErrorMessage errorMessage, ChannelHandlerContext ctx)
     {
-        Promise<Serializable> returnValue = mPromisesManager.get(errorMessage.getId());
+        Promise<MethodCallResponse> returnValue = mPromisesManager.get(errorMessage.getId());
         if(returnValue != null)
         {
             returnValue.setFailure(errorMessage.getThrowable());
