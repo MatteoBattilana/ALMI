@@ -16,11 +16,12 @@ public class MethodsMapperTest
             public void configure()
               throws Exception
             {
-                install(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum"));
+                addMethods(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum"),
+                  bindStatic(Arithmetic.class).method("toLowerCase", String.class).withDefaultName());
             }
         };
         methodsMapper.configure();
-        Assert.assertEquals(1, methodsMapper.methodDescriptorMap().size());
+        Assert.assertEquals(2, methodsMapper.methodDescriptorMap().size());
     }
 
     @Test (expected = MethodAlreadyExistsException.class)
@@ -32,8 +33,8 @@ public class MethodsMapperTest
             public void configure()
               throws Exception
             {
-                install(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum"));
-                install(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum"));
+                addMethods(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum"));
+                addMethods(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum"));
             }
         };
         methodsMapper.configure();
@@ -49,8 +50,8 @@ public class MethodsMapperTest
             public void configure()
               throws Exception
             {
-                install(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum"));
-                install(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum1"));
+                addMethods(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum"));
+                addMethods(bind(new Arithmetic()).method("sum", int.class, int.class).withName("sum1"));
             }
         };
         methodsMapper.configure();
@@ -66,7 +67,7 @@ public class MethodsMapperTest
             public void configure()
               throws Exception
             {
-                install(bind(new Arithmetic()).method("sum2", int.class, int.class).withName("sum"));
+                addMethods(bind(new Arithmetic()).method("sum2", int.class, int.class).withName("sum"));
             }
         };
         methodsMapper.configure();

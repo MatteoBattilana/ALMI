@@ -19,7 +19,7 @@ public class Calculator
         throw new ArithmeticException("My bad! Cannot work with imaginary values!");
     }
 
-    public double execute(double v1, Operation operation, double v2)
+    public static double execute(double v1, Operation operation, double v2)
     {
         switch(operation)
         {

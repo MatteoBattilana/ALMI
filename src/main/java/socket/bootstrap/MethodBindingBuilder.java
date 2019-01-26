@@ -14,6 +14,10 @@ public class MethodBindingBuilder
     public NameBindingBuilder method(String methodName, Class<?>... params)
       throws NoSuchMethodException
     {
+        if(mInstance instanceof Class<?>)
+        {
+            return method(((Class) mInstance).getMethod(methodName, params));
+        }
         return method(mInstance.getClass().getMethod(methodName, params));
     }
 

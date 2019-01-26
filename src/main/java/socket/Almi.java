@@ -3,8 +3,6 @@ package socket;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import exceptions.InvisibleWrapperException;
-import io.netty.channel.DefaultEventLoop;
-import io.netty.util.concurrent.GlobalEventExecutor;
 import io.netty.util.concurrent.Promise;
 import message.MethodCallRequest;
 import message.MethodCallResponse;
@@ -59,11 +57,10 @@ public class Almi implements Service<Almi>
     }
 
     @Override
-    public Almi stop()
+    public void stop()
     {
         mConnectionPoolManager.close();
         mServerSocketService.stop();
-        return this;
     }
 
     @SuppressWarnings (value="unchecked")
@@ -85,46 +82,15 @@ public class Almi implements Service<Almi>
             // TODO: Made a choice!
             throw new InvisibleWrapperException(e);
         }
-        // finally
-        // {
-        //     mPromisesManager.cancelPromise(methodCallRequest.getId());
-        // }
+        finally
+        {
+            mPromisesManager.cancelPromise(methodCallRequest.getId());
+        }
     }
 
     public <T> T callMethod(String address, int port, String remoteName, List<Serializable> params)
       throws InvisibleWrapperException
     {
-        // Promise<MethodCallResponse> promise = GlobalEventExecutor.INSTANCE.newPromise();
-        // Thread one = new Thread()
-        // {
-        //     public void run()
-        //     {
-        //         try
-        //         {
-        //             System.out.println("Does it work?");
-        //
-        //             Thread.sleep(300);
-        //             promise.setSuccess(new MethodCallResponse("sd", ""));
-        //             System.out.println("Nope, it doesnt...again.");
-        //         }
-        //         catch(InterruptedException v)
-        //         {
-        //             System.out.println(v);
-        //         }
-        //     }
-        // };
-        //
-        // one.start();
-        //
-        // try
-        // {
-        //     promise.sync();
-        // }
-        // catch(InterruptedException e)
-        // {
-        //     e.printStackTrace();
-        // }
-        // return (T) new Double(2.0);
         return callMethod(new InetSocketAddress(address, port), remoteName, params);
     }
 }

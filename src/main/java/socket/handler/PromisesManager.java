@@ -24,7 +24,6 @@ public class PromisesManager
 
     public void cancelPromise(String key)
     {
-        // get(key).cancel(true);
         mReturnValuePromises.remove(key);
     }
 }

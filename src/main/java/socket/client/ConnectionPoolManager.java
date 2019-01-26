@@ -75,9 +75,12 @@ public class ConnectionPoolManager
             if(f.isSuccess())
             {
                 Channel ch = f.getNow();
-                mPromisesManager.put(request.getId(), promise);
                 ch.writeAndFlush(request);
                 pool.release(ch);
+            }
+            else
+            {
+                promise.setFailure(f.cause());
             }
         });
 

@@ -33,10 +33,9 @@ public class ServerSocketService implements Service<ServerSocketService>, Runnab
     }
 
     @Override
-    public ServerSocketService stop()
+    public void stop()
     {
         mServerSocket.close();
-        return this;
     }
 
     @Override

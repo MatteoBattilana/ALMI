@@ -1,9 +1,11 @@
 package socket.bootstrap;
 
-import com.google.inject.Inject;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import exceptions.AlmiException;
 import exceptions.InvalidPropertiesFileException;
 import exceptions.MethodMapperException;
+import guice.AlmiModules;
 import method.MethodDescriptor;
 import socket.Almi;
 import socket.AlmiFactory;
@@ -29,8 +31,16 @@ public class DefaultAlmiBootstrap implements AlmiBootstrap
     private int                           mConnectTimeout      = Constants.DEFAULT_CONNECTION_TIMEOUT;
     private int                           mPromiseTimeout      = Constants.DEFAULT_PROMISE_TIMEOUT;
 
-    @Inject
-    public DefaultAlmiBootstrap(AlmiFactory almiFactory)
+    public static DefaultAlmiBootstrap bootstrap()
+    {
+        Injector injector = Guice.createInjector(new AlmiModules());
+
+        return new DefaultAlmiBootstrap(
+          injector.getInstance(AlmiFactory.class)
+        );
+    }
+
+    private DefaultAlmiBootstrap(AlmiFactory almiFactory)
     {
         mAlmiFactory = almiFactory;
     }

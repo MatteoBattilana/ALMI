@@ -18,8 +18,12 @@ public abstract class MethodsMapper
     {
         return new MethodBindingBuilder(instance);
     }
+    protected MethodBindingBuilder bindStatic(Class<?> clazz)
+    {
+        return bind(clazz);
+    }
 
-    public void install(MethodDescriptor ... methodsDescriptor)
+    public void addMethods(MethodDescriptor ... methodsDescriptor)
       throws AlmiException
     {
         for(MethodDescriptor method : methodsDescriptor)
