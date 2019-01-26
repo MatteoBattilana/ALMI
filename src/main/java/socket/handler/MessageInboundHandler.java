@@ -1,25 +1,60 @@
 package socket.handler;
 
-import exceptions.AlmiException;
+import com.google.inject.Inject;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.ReferenceCountUtil;
+import io.netty.util.concurrent.Promise;
 import message.BaseMessage;
+import message.ErrorMessage;
+import message.MessageInterpreter;
+import message.MethodCallRequest;
+import message.MethodCallResponse;
+import method.MethodsManager;
+
+import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
 
 @ChannelHandler.Sharable
-public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage>
+public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessage> implements MessageInterpreter<Void>
 {
+    private final MethodsManager  mMethodsManager;
+    private final PromisesManager mPromisesManager;
+
+    @Inject
+    public MessageInboundHandler(
+      MethodsManager methodsManager,
+      PromisesManager promisesManager
+    )
+    {
+        mMethodsManager = methodsManager;
+        mPromisesManager = promisesManager;
+    }
+
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, BaseMessage msg) throws AlmiException
+    public void channelActive(ChannelHandlerContext ctx)
+      throws Exception
+    {
+        System.out.println("Connected!");
+        super.channelActive(ctx);
+    }
+
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, BaseMessage in)
     {
         try
         {
-            ctx.writeAndFlush(msg.generateResponse());
+            System.out.println("Received: " + in.getClass());
+            in.interpret(this, ctx);
+        }
+        catch(Exception e)
+        {
+            ctx.writeAndFlush(new ErrorMessage(in.getId(), e));
         }
         finally
         {
-            ReferenceCountUtil.release(msg);
+            ReferenceCountUtil.release(in);
         }
     }
 
@@ -28,5 +63,49 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     {
         System.out.println("Closed connection!");
         ctx.fireChannelInactive();
+    }
+
+    @Override
+    public Void interpret(MethodCallResponse methodCallResponse, ChannelHandlerContext ctx)
+    {
+        Promise<MethodCallResponse> returnPromise = mPromisesManager.get(methodCallResponse.getId());
+        if(returnPromise != null)
+        {
+            returnPromise.setSuccess(methodCallResponse);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Void interpret(MethodCallRequest methodCallRequest, ChannelHandlerContext ctx)
+      throws Exception
+    {
+        try
+        {
+            Serializable results = mMethodsManager.execute(
+              methodCallRequest.getMethodName(),
+              methodCallRequest.getMethodParameters()
+            );
+            ctx.writeAndFlush(new MethodCallResponse<>(methodCallRequest.getId(), results));
+        }
+        catch(InvocationTargetException e)
+        {
+            ctx.writeAndFlush(new MethodCallResponse<>(methodCallRequest.getId(), e.getCause()));
+        }
+
+        return null;
+    }
+
+    @Override
+    public Void interpret(ErrorMessage errorMessage, ChannelHandlerContext ctx)
+    {
+        Promise<MethodCallResponse> returnValue = mPromisesManager.get(errorMessage.getId());
+        if(returnValue != null)
+        {
+            returnValue.setFailure(errorMessage.getThrowable());
+        }
+
+        return null;
     }
 }

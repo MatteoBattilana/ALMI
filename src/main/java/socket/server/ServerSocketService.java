@@ -2,29 +2,34 @@ package socket.server;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import utils.Constants;
 import utils.Service;
 
-public class ServerSocketService implements Service, Runnable
+public class ServerSocketService implements Service<ServerSocketService>, Runnable
 {
+    private final String       mThreadName;
     private final ServerSocket mServerSocket;
 
     @Inject
     public ServerSocketService(
       ServerSocketFactory serverSocketFactory,
-      @Assisted int port
-    )
+      @Assisted("socketAddress") String socketAddress,
+      @Assisted("port") int port,
+      @Assisted("connectTimeout") int connectTimeout,
+      @Assisted("threadName") String threadName
+      )
     {
-        mServerSocket = serverSocketFactory.create(port);
+        mThreadName = threadName;
+        mServerSocket = serverSocketFactory.create(socketAddress, port, connectTimeout);
     }
 
     @Override
-    public void start()
+    public ServerSocketService start()
     {
         new Thread(
           this,
-          Constants.SOCKET_SERVICE_NAME
+          mThreadName
         ).start();
+        return this;
     }
 
     @Override

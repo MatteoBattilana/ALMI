@@ -2,23 +2,15 @@ package utils;
 
 public class Constants
 {
-    public static final int MESSAGE_PORT = 11111;
-    public static final int STREAM_PORT  = 11112;
+    public static final int    DEFAULT_PORT               = 8888;
+    public static final int    DEFAULT_CONNECTION_TIMEOUT = 10000;
+    public static final int    DEFAULT_PROMISE_TIMEOUT    = 10000;
+    public static final String DEFAULT_THREAD_NAME        = "socket-service";
+    public static final String DEFAULT_ADDRESS            = "localhost";
 
-    public static final String SOCKET_SERVICE_NAME = "socket-service";
-
-    public static final String MESSAGE_TYPE_ERROR                = "error";
-    public static final String MESSAGE_TYPE_METHOD_CALL_REQUEST  = "methodCallRequest";
-    public static final String MESSAGE_TYPE_METHOD_CALL_RESPONSE = "methodCallResponse";
-    public static final String MESSAGE_TYPE_HANDSHAKE_REQUEST    = "handshakeRequest";
-    public static final String MESSAGE_TYPE_HANDSHAKE_RESPONSE   = "handshakeResponse";
-    public static final String MESSAGE_TYPE_STUB_RESPONSE        = "stubResponse";
-    public static final String MESSAGE_TYPE_STREAM_REQUEST       = "streamRequest";
-
-    public static final String JSON_MESSAGE_ID   = "messageId";
-    public static final String JSON_MESSAGE_TYPE = "messageType";
-    public static final String JSON_EXCEPTION    = "exception";
-    public static final String JSON_METHOD_NAME  = "methodName";
-    public static final String JSON_PARAMETERS   = "parameters";
-    public static final String JSON_RETURN_VALUE = "returnValue";
+    public static final String PROPERTY_THREAD_NAME        = "thread_name";
+    public static final String PROPERTY_ADDRESS            = "address";
+    public static final String PROPERTY_PORT               = "port";
+    public static final String PROPERTY_CONNECTION_TIMEOUT = "connection_timeout";
+    public static final String PROPERTY_PROMISE_TIMEOUT    = "promise_timeout";
 }

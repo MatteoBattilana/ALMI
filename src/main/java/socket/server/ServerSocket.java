@@ -3,48 +3,36 @@ package socket.server;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import socket.handler.SocketChannelInitializer;
-import utils.Constants;
 
-import java.io.Closeable;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 
-public class ServerSocket implements Closeable
+public class ServerSocket
 {
-
-    private final SocketChannelInitializer mSocketChannelInitializer;
-
     private NioEventLoopGroup mGroup;
     private ServerBootstrap   mBootstrap;
 
     @Inject
     public ServerSocket(
       SocketChannelInitializer socketChannelInitializer,
-      @Assisted int port
+      @Assisted String address,
+      @Assisted("port") int port,
+      @Assisted("connectionTimeout") int connectionTimeout
     )
-    {
-        mSocketChannelInitializer = socketChannelInitializer;
-        init(port);
-    }
-
-    private void init(int port)
     {
         mGroup = new NioEventLoopGroup();
         mBootstrap = new ServerBootstrap();
         mBootstrap.group(mGroup)
+          .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectionTimeout)
           .channel(NioServerSocketChannel.class)
-          .childHandler(mSocketChannelInitializer);
+          .localAddress(new InetSocketAddress(address, port))
+          .childHandler(socketChannelInitializer);
     }
 
-    @Override
     public void close()
     {
         mGroup.shutdownGracefully().syncUninterruptibly();
@@ -54,15 +42,8 @@ public class ServerSocket implements Closeable
     public void startListening()
       throws InterruptedException
     {
-        List<Integer> ports = Arrays.asList(Constants.MESSAGE_PORT, Constants.STREAM_PORT);
-        Collection<Channel> channels = new ArrayList<>(ports.size());
-        for (int port : ports) {
-            Channel serverChannel = mBootstrap.bind(port).sync().channel();
-            System.out.println("Started listen on: " + port);
-            channels.add(serverChannel);
-        }
-        for (Channel ch : channels) {
-            ch.closeFuture().sync();
-        }
+        ChannelFuture future = mBootstrap.bind().sync();
+        System.out.println("Started listening on" + future.channel().localAddress());
+        future.channel().closeFuture().sync();
     }
 }

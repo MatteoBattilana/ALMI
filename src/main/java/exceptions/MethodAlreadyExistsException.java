@@ -1,16 +1,16 @@
 package exceptions;
 
-import method.MethodHandler;
+import method.MethodDescriptor;
 
 public class MethodAlreadyExistsException extends AlmiException
 {
-    public MethodAlreadyExistsException(MethodHandler methodHandler)
+    public MethodAlreadyExistsException(MethodDescriptor methodDescriptor)
     {
-        super(getErrorMessage(methodHandler));
+        super(getErrorMessage(methodDescriptor));
     }
 
-    private static String getErrorMessage(MethodHandler methodHandler)
+    private static String getErrorMessage(MethodDescriptor methodDescriptor)
     {
-        return String.format("%s, already exists!", methodHandler.toString());
+        return String.format("%s, already exists!", methodDescriptor.toString());
     }
 }

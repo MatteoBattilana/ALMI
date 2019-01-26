@@ -2,8 +2,8 @@ package message;
 
 public abstract class BaseMessage extends Message
 {
-    public BaseMessage(MessageType messageType, String id)
+    public BaseMessage(String id)
     {
-        super(messageType, id);
+        super(id);
     }
 }

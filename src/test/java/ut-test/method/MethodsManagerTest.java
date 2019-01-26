@@ -1,11 +1,16 @@
 package method;
 
-import exceptions.MethodAlreadyExistsException;
 import exceptions.MissingMethodException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import testUtils.Arithmetic;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MethodsManagerTest {
 
@@ -17,30 +22,25 @@ public class MethodsManagerTest {
         mMethodsManager = new MethodsManager();
     }
 
-    @Test (expected = MethodAlreadyExistsException.class)
-    public void addMethodsError() throws Exception
-    {
-        mMethodsManager.addMethod(new Arithmetic(), Arithmetic.class.getMethod("sum", int.class, int.class), "sum");
-        mMethodsManager.addMethod(new Arithmetic(), Arithmetic.class.getMethod("sum", int.class, int.class), "sum");
-    }
-
     @Test (expected = MissingMethodException.class)
     public void missingMethod() throws Exception
     {
-        mMethodsManager.execute("toString");
+        mMethodsManager.execute("toString", Collections.emptyList());
     }
 
     @Test
     public void methodCall() throws Exception
     {
+        Map<String, MethodDescriptor> map = new HashMap<>();
         Arithmetic arithmeticInstance = new Arithmetic();
-        mMethodsManager.addMethod(arithmeticInstance, Arithmetic.class.getMethod("toString"), "toString");
-        mMethodsManager.addMethod(arithmeticInstance, Arithmetic.class.getMethod("sum", int.class, int.class), "randomName");
+        map.put("toString", new MethodDescriptor(arithmeticInstance, Arithmetic.class.getMethod("toString"), "toString"));
+        map.put("randomName", new MethodDescriptor(arithmeticInstance, Arithmetic.class.getMethod("sum", int.class, int.class), "randomName"));
+        mMethodsManager.addAll(map);
 
-        Object results = mMethodsManager.execute("toString");
+        Serializable results = mMethodsManager.execute("toString", Collections.emptyList());
         Assert.assertEquals(arithmeticInstance.toString(), results);
 
-        Object sum = mMethodsManager.execute("randomName", 2, 4);
+        Serializable sum = mMethodsManager.execute("randomName", Arrays.asList(2, 4));
         Assert.assertEquals(arithmeticInstance.sum(2, 4), sum);
     }
 }

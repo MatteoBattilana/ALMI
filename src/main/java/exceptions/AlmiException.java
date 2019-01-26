@@ -1,10 +1,7 @@
 package exceptions;
 
-import java.io.Serializable;
-
-public class AlmiException extends Exception implements Serializable
+public class AlmiException extends Exception
 {
-
     public AlmiException(String message)
     {
         super(message);

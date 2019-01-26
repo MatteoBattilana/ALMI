@@ -5,8 +5,10 @@ import com.google.inject.Singleton;
 import exceptions.AlmiException;
 import exceptions.MethodAlreadyExistsException;
 import exceptions.MissingMethodException;
+import exceptions.UnsupportedReturnTypeException;
 import exceptions.WrongParametersException;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -14,7 +16,7 @@ import java.util.*;
 @Singleton
 public class MethodsManager
 {
-    private final Map<String, MethodHandler> mMethodsMap;
+    private final Map<String, MethodDescriptor> mMethodsMap;
 
     @Inject
     public MethodsManager()
@@ -22,40 +24,25 @@ public class MethodsManager
         mMethodsMap = new HashMap<>();
     }
 
-    private void addMethod(MethodHandler methodHandler)
-      throws MethodAlreadyExistsException
+    public void addAll(Map<String, MethodDescriptor> methodDescriptors)
     {
-        if(mMethodsMap.containsKey(methodHandler.getRemoteName()))
-        {
-            throw new MethodAlreadyExistsException(methodHandler);
-        }
-        mMethodsMap.put(methodHandler.getRemoteName(), methodHandler);
+        mMethodsMap.putAll(methodDescriptors);
     }
 
-    public void addMethod(Object instance, Method method, String remoteName)
-      throws MethodAlreadyExistsException
+    public Serializable execute(String methodName, List<Serializable> params)
+      throws Exception
     {
-        addMethod(new MethodHandler(instance, method, remoteName));
-    }
-
-    public Object execute(String methodName, Object... param)
-      throws AlmiException
-    {
-        MethodHandler method = mMethodsMap.get(methodName);
+        MethodDescriptor method = mMethodsMap.get(methodName);
         if(method != null)
         {
-            if(method.getMethod().getParameterCount() == param.length)
+            if(method.getMethod().getParameterCount() == params.size())
             {
-                try
-                {
-                    return method.getMethod().invoke(method.getInstance(), param);
-                }
-                catch(IllegalAccessException | InvocationTargetException e)
-                {
-                    throw new AlmiException(e);
-                }
+                return (Serializable) method.getMethod().invoke(
+                  method.getInstance(),
+                  params.toArray(new Object[0])
+                );
             }
-            throw new WrongParametersException(method.getMethod().getParameterCount(), param.length);
+            throw new WrongParametersException(method.getMethod().getParameterCount(), params.size());
         }
         throw new MissingMethodException(methodName);
     }
