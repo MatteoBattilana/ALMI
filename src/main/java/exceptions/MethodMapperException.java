@@ -9,6 +9,6 @@ public class MethodMapperException extends AlmiException
 
     private static String getErrorMessage()
     {
-        return String.format("Invalid MethodMapper configuration!");
+        return String.format("Invalid RemoteMethodMapper configuration!");
     }
 }

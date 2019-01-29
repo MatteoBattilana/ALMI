@@ -1,5 +1,7 @@
 package calculator;
 
+import java.io.InputStream;
+
 public class Calculator
 {
     public enum Operation
@@ -8,6 +10,11 @@ public class Calculator
         SUB,
         DIV,
         MUL
+    }
+
+    public int size(InputStream inputStream)
+    {
+        return 1;
     }
 
     public double sqrt(double v1) throws ArithmeticException
