@@ -10,7 +10,6 @@ public class NameBindingBuilder
     private final Object               mInstance;
     private final Method               mMethod;
 
-
     public NameBindingBuilder(
       Object instance,
       Method method

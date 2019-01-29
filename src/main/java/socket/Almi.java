@@ -13,6 +13,7 @@ import socket.client.ConnectionPoolManagerFactory;
 import socket.handler.PromisesManager;
 import socket.server.ServerSocketService;
 import socket.server.ServerSocketServiceFactory;
+import utils.ExceptionUtils;
 import utils.Service;
 
 import java.io.Serializable;
@@ -25,8 +26,8 @@ public class Almi implements Service<Almi>
 {
     private final ServerSocketService   mServerSocketService;
     private final PromisesManager       mPromisesManager;
-    private final int                   mPromiseTimeout;
     private final ConnectionPoolManager mConnectionPoolManager;
+    private final int                   mPromiseTimeout;
 
     @Inject
     private Almi(
@@ -38,14 +39,14 @@ public class Almi implements Service<Almi>
       @Assisted("threadName") String threadName,
       @Assisted("socketAddress") String socketAddress,
       @Assisted("port") int port,
-      @Assisted("connectTimeout") int connectTimeout,
+      @Assisted("connectTimeout") int connectionTimeout,
       @Assisted("promiseTimeout") int promiseTimeout
     )
     {
         mPromisesManager = promisesManager;
         mPromiseTimeout = promiseTimeout;
-        mConnectionPoolManager = connectionPoolManagerFactory.create(connectTimeout);
-        mServerSocketService = serverSocketServiceFactory.create(socketAddress, port, connectTimeout, threadName);
+        mConnectionPoolManager = connectionPoolManagerFactory.create(connectionTimeout);
+        mServerSocketService = serverSocketServiceFactory.create(socketAddress, port, connectionTimeout, threadName);
         methodsManager.addAll(methodDescriptorMap);
     }
 
@@ -64,7 +65,7 @@ public class Almi implements Service<Almi>
     }
 
     @SuppressWarnings (value="unchecked")
-    public <T> T callMethod(InetSocketAddress address, String remoteName, List<Serializable> params)
+    private  <T> T callMethod(InetSocketAddress address, long timeout,  String remoteName, List<Serializable> params)
       throws InvisibleWrapperException
     {
         MethodCallRequest methodCallRequest = new MethodCallRequest(remoteName, params);
@@ -75,12 +76,12 @@ public class Almi implements Service<Almi>
 
         try
         {
-            return (T) promise.get(mPromiseTimeout, TimeUnit.MILLISECONDS).getReturnValue();
+            return (T) promise.get(timeout, TimeUnit.MILLISECONDS).getReturnValue();
         }
         catch(Throwable e)
         {
             // TODO: Made a choice!
-            throw new InvisibleWrapperException(e);
+            throw ExceptionUtils.wrap(e);
         }
         finally
         {
@@ -91,6 +92,12 @@ public class Almi implements Service<Almi>
     public <T> T callMethod(String address, int port, String remoteName, List<Serializable> params)
       throws InvisibleWrapperException
     {
-        return callMethod(new InetSocketAddress(address, port), remoteName, params);
+        return callMethod(new InetSocketAddress(address, port), mPromiseTimeout, remoteName, params);
+    }
+
+    public <T> T callMethod(String address, int port, long timeout, String remoteName, List<Serializable> params)
+      throws InvisibleWrapperException
+    {
+        return callMethod(new InetSocketAddress(address, port), timeout, remoteName, params);
     }
 }
