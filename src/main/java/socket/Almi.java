@@ -80,7 +80,6 @@ public class Almi implements Service<Almi>
         }
         catch(Throwable e)
         {
-            // TODO: Made a choice!
             throw ExceptionUtils.wrap(e);
         }
         finally
@@ -89,15 +88,15 @@ public class Almi implements Service<Almi>
         }
     }
 
-    public <T> T callMethod(String address, int port, String remoteName, List<Serializable> params)
+    public <T> T callMethod(String hostname, int remotePort, String remoteMethodName, List<Serializable> methodParams)
       throws InvisibleWrapperException
     {
-        return callMethod(new InetSocketAddress(address, port), mPromiseTimeout, remoteName, params);
+        return callMethod(new InetSocketAddress(hostname, remotePort), mPromiseTimeout, remoteMethodName, methodParams);
     }
 
-    public <T> T callMethod(String address, int port, long timeout, String remoteName, List<Serializable> params)
+    public <T> T callMethod(String hostname, int remotePort, long callTimeout, String remoteMethodName, List<Serializable> methodParams)
       throws InvisibleWrapperException
     {
-        return callMethod(new InetSocketAddress(address, port), timeout, remoteName, params);
+        return callMethod(new InetSocketAddress(hostname, remotePort), callTimeout, remoteMethodName, methodParams);
     }
 }

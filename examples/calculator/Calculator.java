@@ -12,11 +12,6 @@ public class Calculator
         MUL
     }
 
-    public int size(InputStream inputStream)
-    {
-        return 1;
-    }
-
     public double sqrt(double v1) throws ArithmeticException
     {
         if(v1 >= 0)
