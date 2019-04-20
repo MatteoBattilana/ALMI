@@ -1,6 +1,5 @@
 package message;
 
-import exceptions.AlmiException;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.Serializable;

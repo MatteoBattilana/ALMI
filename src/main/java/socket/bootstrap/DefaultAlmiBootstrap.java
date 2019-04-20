@@ -52,7 +52,7 @@ public class DefaultAlmiBootstrap implements AlmiBootstrap
         withAddress(PropertiesUtils.optString(props, Constants.PROPERTY_ADDRESS, Constants.DEFAULT_ADDRESS));
         withPort(PropertiesUtils.optInt(props, Constants.PROPERTY_PORT, Constants.DEFAULT_PORT));
         withConnectionTimeout(PropertiesUtils.optInt(props, Constants.PROPERTY_CONNECTION_TIMEOUT, Constants.DEFAULT_CONNECTION_TIMEOUT));
-        withPromiseTimeout(PropertiesUtils.optInt(props, Constants.PROPERTY_PROMISE_TIMEOUT, Constants.DEFAULT_PROMISE_TIMEOUT));
+        withRemoteCallTimeout(PropertiesUtils.optInt(props, Constants.PROPERTY_PROMISE_TIMEOUT, Constants.DEFAULT_PROMISE_TIMEOUT));
         return this;
     }
 
@@ -118,7 +118,7 @@ public class DefaultAlmiBootstrap implements AlmiBootstrap
     }
 
     @Override
-    public AlmiBootstrap withPromiseTimeout(int timeout)
+    public AlmiBootstrap withRemoteCallTimeout(int timeout)
     {
         mPromiseTimeout = timeout;
         return this;

@@ -32,7 +32,7 @@ public interface AlmiBootstrap
     /**
      * @param timeout
      */
-    AlmiBootstrap withPromiseTimeout(int timeout);
+    AlmiBootstrap withRemoteCallTimeout(int timeout);
 
     /**
      * @param props

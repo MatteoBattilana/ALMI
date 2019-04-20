@@ -14,7 +14,7 @@ public class ClientInformation implements Methods
         Almi server = DefaultAlmiBootstrap.bootstrap()
           .withPort(8888)
           .withThreadName("ClientInformation-ALMI-server")
-          .withPromiseTimeout(2000)
+          .withRemoteCallTimeout(2000)
           .withMethodsMapper(new MethodsMapper()
           {
               @Override

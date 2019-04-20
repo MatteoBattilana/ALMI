@@ -15,7 +15,7 @@ public class AlmiCalculator
     {
         Almi server = DefaultAlmiBootstrap.bootstrap()
           .withPort(8888)
-          .withPromiseTimeout(2000)
+          .withRemoteCallTimeout(2000)
           .withMethodsMapper(new MethodsMapper()
           {
               @Override
