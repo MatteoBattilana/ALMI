@@ -1,7 +1,7 @@
 package clientinformation;
 
 import socket.Almi;
-import socket.bootstrap.DefaultAlmiBootstrap;
+import socket.bootstrap.AlmiBootstrap;
 import socket.bootstrap.MethodsMapper;
 
 import java.lang.management.ManagementFactory;
@@ -11,7 +11,7 @@ public class ClientInformation implements Methods
     public static void main(String[] args)
       throws Exception
     {
-        Almi server = DefaultAlmiBootstrap.bootstrap()
+        Almi server = AlmiBootstrap.bootstrap()
           .withPort(8888)
           .withThreadName("ClientInformation-ALMI-server")
           .withRemoteCallTimeout(2000)

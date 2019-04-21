@@ -5,7 +5,7 @@ public class Constants
     public static final int    DEFAULT_PORT               = 8888;
     public static final int    DEFAULT_CONNECTION_TIMEOUT = 10000;
     public static final int    DEFAULT_PROMISE_TIMEOUT    = 10000;
-    public static final String DEFAULT_THREAD_NAME        = "socket-service";
+    public static final String DEFAULT_THREAD_NAME        = "almi-service";
     public static final String DEFAULT_ADDRESS            = "localhost";
 
     public static final String PROPERTY_THREAD_NAME        = "thread_name";

@@ -2,7 +2,7 @@ package calculator;
 
 import exceptions.InvisibleWrapperException;
 import socket.Almi;
-import socket.bootstrap.DefaultAlmiBootstrap;
+import socket.bootstrap.AlmiBootstrap;
 import socket.bootstrap.MethodsMapper;
 
 import java.util.Arrays;
@@ -13,7 +13,7 @@ public class AlmiCalculator
     public static void main(String[] args)
       throws Exception
     {
-        Almi server = DefaultAlmiBootstrap.bootstrap()
+        Almi server = AlmiBootstrap.bootstrap()
           .withPort(8888)
           .withRemoteCallTimeout(2000)
           .withMethodsMapper(new MethodsMapper()

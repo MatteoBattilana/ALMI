@@ -36,7 +36,6 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     public void channelActive(ChannelHandlerContext ctx)
       throws Exception
     {
-        System.out.println("Connected!");
         super.channelActive(ctx);
     }
 
@@ -45,7 +44,6 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     {
         try
         {
-            System.out.println("Received: " + in.getClass());
             in.interpret(this, ctx);
         }
         catch(Exception e)
@@ -61,7 +59,6 @@ public class MessageInboundHandler extends SimpleChannelInboundHandler<BaseMessa
     @Override
     public void channelInactive(ChannelHandlerContext ctx)
     {
-        System.out.println("Closed connection!");
         ctx.fireChannelInactive();
     }
 
