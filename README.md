@@ -8,7 +8,7 @@ ALMI is a Java multiserver framework for remote method calls management based on
 This framework will semplify the cluster management, making methods accessibile from other server, that has ALMI running on a node in the cluster.
 
 ## Setup
-Add ALMI dependencies in your pom.xml or eventually, go to the [Maven Repository](https://search.maven.org/artifact/com.matteobattilana/almi/0.1.0/jar) and download the jar library file.
+Add ALMI dependencies in your pom.xml or eventually, go to the [Maven Repository](https://search.maven.org/artifact/com.matteobattilana/almi/0.1.1/jar) and download the jar library file.
 
 ```xml
 <dependencies>
@@ -16,7 +16,7 @@ Add ALMI dependencies in your pom.xml or eventually, go to the [Maven Repository
     <dependency>
         <groupId>com.matteobattilana</groupId>
         <artifactId>almi</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
     </dependency>
 </dependencies>
 ```
