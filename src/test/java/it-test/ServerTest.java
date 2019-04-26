@@ -20,11 +20,13 @@ public class ServerTest
     {
         mServer1 = AlmiBootstrap.bootstrap()
           .withPort(mPort1)
+          .withAddress("localhost")
           .withRemoteCallTimeout(2000)
           .start();
 
         mServer2 = AlmiBootstrap.bootstrap()
           .withPort(mPort2)
+          .withAddress("localhost")
           .withRemoteCallTimeout(2000)
           .withMethodsMapper(new MethodsMapper()
           {
