@@ -12,7 +12,6 @@ Add ALMI dependencies in your pom.xml or eventually, go to the [Maven Repository
 
 ```xml
 <dependencies>
-    ...
     <dependency>
         <groupId>com.matteobattilana</groupId>
         <artifactId>almi</artifactId>
@@ -23,7 +22,7 @@ Add ALMI dependencies in your pom.xml or eventually, go to the [Maven Repository
 
 ## Simple usage
 
-The following code will instantiate an ALMI server that is listening on the 8888 port (if not set, it will use the one described in the [Default configuration](#Default configuration) section).
+The following code will instantiate an ALMI server that is listening on the 8888 port. If not set, it will use the one described in the [Default configuration](#default-configuration) section).
 
 ```java
 Almi server = AlmiBootstrap.bootstrap()
@@ -82,5 +81,4 @@ public static final int    DEFAULT_PORT               = 8888;
 public static final int    DEFAULT_CONNECTION_TIMEOUT = 10000;
 public static final int    DEFAULT_PROMISE_TIMEOUT    = 10000;
 public static final String DEFAULT_THREAD_NAME        = "almi-service";
-public static final String DEFAULT_ADDRESS            = "localhost";
 ```

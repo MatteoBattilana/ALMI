@@ -16,6 +16,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -26,7 +28,7 @@ public class AlmiBootstrap implements Bootstrap
 
     private Map<String, MethodDescriptor> mMethodDescriptorMap = new HashMap<>();
     private String                        mThreadName          = Constants.DEFAULT_THREAD_NAME;
-    private String                        mSocketAddress       = Constants.DEFAULT_ADDRESS;
+    private String                        mSocketAddress       = getHostname();
     private int                           mPort                = Constants.DEFAULT_PORT;
     private int                           mConnectTimeout      = Constants.DEFAULT_CONNECTION_TIMEOUT;
     private int                           mPromiseTimeout      = Constants.DEFAULT_PROMISE_TIMEOUT;
@@ -49,7 +51,7 @@ public class AlmiBootstrap implements Bootstrap
     public Bootstrap from(Properties props) throws AlmiException
     {
         withThreadName(PropertiesUtils.optString(props, Constants.PROPERTY_THREAD_NAME, Constants.DEFAULT_THREAD_NAME));
-        withAddress(PropertiesUtils.optString(props, Constants.PROPERTY_ADDRESS, Constants.DEFAULT_ADDRESS));
+        withAddress(PropertiesUtils.optString(props, Constants.PROPERTY_ADDRESS, getHostname()));
         withPort(PropertiesUtils.optInt(props, Constants.PROPERTY_PORT, Constants.DEFAULT_PORT));
         withConnectionTimeout(PropertiesUtils.optInt(props, Constants.PROPERTY_CONNECTION_TIMEOUT, Constants.DEFAULT_CONNECTION_TIMEOUT));
         withRemoteCallTimeout(PropertiesUtils.optInt(props, Constants.PROPERTY_PROMISE_TIMEOUT, Constants.DEFAULT_PROMISE_TIMEOUT));
@@ -140,5 +142,17 @@ public class AlmiBootstrap implements Bootstrap
           mConnectTimeout,
           mPromiseTimeout
         );
+    }
+
+    private String getHostname()
+    {
+        try
+        {
+            return InetAddress.getLocalHost().getHostName();
+        }
+        catch(UnknownHostException e)
+        {
+            return "localhost";
+        }
     }
 }
