@@ -1,9 +1,9 @@
 package calculator;
 
-import exceptions.InvisibleWrapperException;
-import socket.Almi;
-import socket.bootstrap.AlmiBootstrap;
-import socket.bootstrap.MethodsMapper;
+import com.matteobattilana.almi.exceptions.InvisibleWrapperException;
+import com.matteobattilana.almi.socket.Almi;
+import com.matteobattilana.almi.socket.bootstrap.AlmiBootstrap;
+import com.matteobattilana.almi.socket.bootstrap.MethodsMapper;
 
 import java.util.Arrays;
 import java.util.Collections;

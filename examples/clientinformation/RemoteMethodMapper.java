@@ -1,8 +1,8 @@
 package clientinformation;
 
-import exceptions.InvisibleWrapperException;
-import socket.Almi;
-import utils.ExceptionUtils;
+import com.matteobattilana.almi.exceptions.InvisibleWrapperException;
+import com.matteobattilana.almi.socket.Almi;
+import com.matteobattilana.almi.utils.ExceptionUtils;
 
 import java.util.Collections;
 

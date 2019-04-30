@@ -1,7 +1,5 @@
 package calculator;
 
-import java.io.InputStream;
-
 public class Calculator
 {
     public enum Operation
