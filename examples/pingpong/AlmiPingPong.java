@@ -1,7 +1,7 @@
 package pingpong;
 
-import socket.Almi;
-import socket.bootstrap.AlmiBootstrap;
+import com.matteobattilana.almi.socket.Almi;
+import com.matteobattilana.almi.socket.bootstrap.AlmiBootstrap;
 
 import java.util.Arrays;
 import java.util.Collections;

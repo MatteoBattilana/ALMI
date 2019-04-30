@@ -1,6 +1,6 @@
 package pingpong;
 
-import socket.bootstrap.MethodsMapper;
+import com.matteobattilana.almi.socket.bootstrap.MethodsMapper;
 
 public class MethodsMapperImpl extends MethodsMapper
 {

@@ -9,7 +9,7 @@
     </properties>
     <groupId>com.matteobattilana</groupId>
     <artifactId>almi</artifactId>
-    <version>0.1.2</version>
+    <version>0.1.5</version>
     <build>
         <plugins>
             <plugin>
@@ -83,7 +83,7 @@
     </build>
     <packaging>jar</packaging>
     <name>ALMI (Abstraction Layer for Multiserver Infrastructure)</name>
-    <description>ALMI is a Java multiserver framework for remote method calls management based on Netty and Jackson serialization, that adds an abstraction layer for multiserver communication.</description>
+    <description>ALMI is a Java multiserver framework for remote com.matteobattilana.almi.method calls management based on Netty and Jackson serialization, that adds an abstraction layer for multiserver communication.</description>
     <url>https://github.com/MatteoBattilana/ALMI</url>
     <licenses>
         <license>
